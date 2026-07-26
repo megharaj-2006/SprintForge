@@ -1,0 +1,33 @@
+package org.SprintForge.common.exception;
+
+public enum ErrorCode {
+    USER_NOT_FOUND("USER_NOT_FOUND"),
+    WORKSPACE_NOT_FOUND("WORKSPACE_NOT_FOUND"),
+    PROJECT_NOT_FOUND("PROJECT_NOT_FOUND"),
+    TASK_NOT_FOUND("TASK_NOT_FOUND"),
+    INVALID_INPUT("INVALID_INPUT"),
+    EMAIL_ALREADY_EXISTS("EMAIL_ALREADY_EXISTS"),
+    WORKSPACE_SLUG_EXISTS("WORKSPACE_SLUG_EXISTS"),
+    PERMISSION_DENIED("PERMISSION_DENIED"),
+    TOKEN_EXPIRED("TOKEN_EXPIRED"),
+    INVALID_REFRESH_TOKEN("INVALID_REFRESH_TOKEN"),
+    
+    // Fallback/standard codes
+    RESOURCE_NOT_FOUND("RESOURCE_NOT_FOUND"),
+    DUPLICATE_RESOURCE("DUPLICATE_RESOURCE"),
+    UNAUTHORIZED("UNAUTHORIZED"),
+    FORBIDDEN("FORBIDDEN"),
+    BAD_REQUEST("BAD_REQUEST"),
+    CONFLICT("CONFLICT"),
+    INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR");
+
+    private final String value;
+
+    ErrorCode(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+}
