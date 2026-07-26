@@ -1,0 +1,19 @@
+package org.SprintForge.common.validation.annotation;
+
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+import org.SprintForge.common.validation.validator.MaxCollectionSizeValidator;
+
+import java.lang.annotation.*;
+
+@Documented
+@Constraint(validatedBy = MaxCollectionSizeValidator.class)
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MaxCollectionSize {
+    String message() default "Collection size exceeds the allowed limit.";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
+
+    int value(); // Max size allowed
+}
