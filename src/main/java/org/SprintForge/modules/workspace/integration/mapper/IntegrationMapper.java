@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.integration.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.integration.entity.Integration;
 import org.SprintForge.modules.workspace.integration.dto.request.IntegrationCreateRequest;
@@ -7,7 +9,7 @@ import org.SprintForge.modules.workspace.integration.dto.response.IntegrationRes
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface IntegrationMapper {
 
     @Mapping(target = "id", ignore = true)

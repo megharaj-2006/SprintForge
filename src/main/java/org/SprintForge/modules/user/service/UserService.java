@@ -8,35 +8,35 @@ import java.util.List;
 
 public interface UserService {
 
-    UserProfileResponseDto getCurrentUserProfile(Long userId);
+    UserProfileResponse getCurrentUserProfile(Long userId);
 
-    PublicUserProfileDto getPublicUserProfile(Long userId);
+    PublicUserProfileResponse getPublicUserProfile(Long userId);
 
-    UserProfileResponseDto updateUserProfile(Long userId, UpdateProfileRequestDto request);
+    UserProfileResponse updateUserProfile(Long userId, UpdateProfileRequest request);
 
-    UsernameCheckResponseDto checkUsernameAvailability(String username, Long currentUserId);
+    UsernameCheckResponse checkUsernameAvailability(String username, Long currentUserId);
 
-    UserSearchResponseDto searchUsers(String query, Pageable pageable);
+    UserSearchResponse searchUsers(String query, Pageable pageable);
 
-    UserProfileResponseDto uploadProfileAvatar(Long userId, MultipartFile file);
+    UserProfileResponse uploadProfileAvatar(Long userId, MultipartFile file);
 
-    UserProfileResponseDto removeProfileAvatar(Long userId);
+    UserProfileResponse removeProfileAvatar(Long userId);
 
-    UserPreferenceDto getUserPreferences(Long userId);
+    UserPreferenceResponse getUserPreferences(Long userId);
 
-    UserPreferenceDto updateUserPreferences(Long userId, UserPreferenceDto preferenceDto);
+    UserPreferenceResponse updateUserPreferences(Long userId, UserPreferenceResponse preferenceDto);
 
     void softDeleteAccount(Long userId);
 
-    UserProfileResponseDto restoreDeletedAccount(Long userId);
+    UserProfileResponse restoreDeletedAccount(Long userId);
 
-    UserStatisticsDto getUserStatistics(Long userId);
+    UserStatisticsResponse getUserStatistics(Long userId);
 
-    List<UserActivityDto> getUserActivityFeed(Long userId, Pageable pageable);
+    List<UserActivityResponse> getUserActivityFeed(Long userId, Pageable pageable);
 
-    UserDataExportDto exportUserData(Long userId);
+    UserDataExportResponse exportUserData(Long userId);
 
     void deactivateAccount(Long userId);
 
-    UserProfileResponseDto reactivateAccount(Long userId);
+    UserProfileResponse reactivateAccount(Long userId);
 }

@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.workspace.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,7 +14,7 @@ import org.SprintForge.modules.workspace.workspace.dto.response.*;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface WorkspaceMapper {
 
     // ==========================================
@@ -144,16 +146,39 @@ public interface WorkspaceMapper {
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "invitedUserId", ignore = true)
     @Mapping(target = "invitedBy", ignore = true)
-    @Mapping(target = "token", ignore = true)
+    @Mapping(target = "inviteToken", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "expiresAt", ignore = true)
+    @Mapping(target = "acceptedAt", ignore = true)
+    @Mapping(target = "rejectedAt", ignore = true)
     WorkspaceInvitation toEntity(WorkspaceInviteRequest dto);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "deletedAt", ignore = true)
+    @Mapping(target = "deletedBy", ignore = true)
+    @Mapping(target = "version", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
+    @Mapping(target = "invitedUserId", ignore = true)
+    @Mapping(target = "invitedBy", ignore = true)
+    @Mapping(target = "inviteToken", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "expiresAt", ignore = true)
+    @Mapping(target = "acceptedAt", ignore = true)
+    @Mapping(target = "rejectedAt", ignore = true)
+    WorkspaceInvitation toEntity(InviteMemberRequest dto);
+
+    @Mapping(target = "token", source = "inviteToken")
     @Mapping(target = "roleName", ignore = true)
     @Mapping(target = "inviterName", ignore = true)
     WorkspaceInvitationResponse toResponse(WorkspaceInvitation entity);
 
     List<WorkspaceInvitationResponse> toInvitationResponseList(List<WorkspaceInvitation> entities);
+
 
     // ==========================================
     // WorkspaceRole Mappings

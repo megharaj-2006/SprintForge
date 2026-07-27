@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.calendar.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.calendar.entity.CalendarEvent;
 import org.SprintForge.modules.workspace.calendar.dto.request.CalendarEventCreateRequest;
@@ -8,7 +10,7 @@ import org.SprintForge.modules.workspace.calendar.dto.response.CalendarEventResp
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface CalendarEventMapper {
 
     @Mapping(target = "id", ignore = true)

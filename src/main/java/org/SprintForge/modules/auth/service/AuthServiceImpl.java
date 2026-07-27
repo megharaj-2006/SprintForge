@@ -15,6 +15,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import lombok.RequiredArgsConstructor;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -24,6 +26,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -165,10 +169,7 @@ public class AuthServiceImpl implements AuthService {
 
         passwordResetTokenRepository.save(resetToken);
 
-        System.out.println("=================================================");
-        System.out.println("PASSWORD RESET TOKEN FOR USER: " + user.getUsername());
-        System.out.println("Token: " + token);
-        System.out.println("=================================================");
+        log.debug("Password reset token generated for user: {} - Token: {}", user.getUsername(), token);
     }
 
     @Override

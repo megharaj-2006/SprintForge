@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.customfield.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.customfield.entity.CustomField;
 import org.SprintForge.modules.workspace.customfield.dto.request.CustomFieldCreateRequest;
@@ -8,7 +10,7 @@ import org.SprintForge.modules.workspace.customfield.dto.response.CustomFieldRes
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface CustomFieldMapper {
 
     @Mapping(target = "id", ignore = true)

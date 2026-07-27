@@ -4,24 +4,28 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.SprintForge.modules.workspace.task.entity.enums.TaskPriority;
+import org.SprintForge.modules.workspace.task.entity.enums.TaskStatus;
 import org.SprintForge.modules.workspace.task.entity.enums.TaskType;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskSummaryResponse {
-
     private Long id;
-    private String taskNumber;
+    private Long projectId;
+    private Long sprintId;
+    private String identifier;
     private String title;
+    private TaskStatus status;
+    private TaskPriority priority;
     private TaskType type;
-    private Long statusId;
-    private Long priorityId;
-    private Long assigneeId;
-    private String assigneeName;
+    private LocalDateTime dueDate;
+    private Double estimatedHours;
+    private Double actualHours;
     private Integer storyPoints;
-    private LocalDate dueDate;
+    private Boolean archived;
 }

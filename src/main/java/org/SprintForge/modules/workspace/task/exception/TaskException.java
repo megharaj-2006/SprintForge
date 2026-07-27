@@ -1,10 +1,11 @@
 package org.SprintForge.modules.workspace.task.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.SprintForge.common.exception.BusinessException;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class TaskException extends RuntimeException {
+
+
+
+public class TaskException extends BusinessException {
     public TaskException(String message) {
         super(message);
     }

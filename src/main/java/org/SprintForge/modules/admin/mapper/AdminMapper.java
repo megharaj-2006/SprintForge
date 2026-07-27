@@ -1,18 +1,20 @@
 package org.SprintForge.modules.admin.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.admin.entity.SystemConfiguration;
-import org.SprintForge.modules.admin.dto.SystemConfigurationDto;
+import org.SprintForge.modules.admin.dto.SystemConfigurationResponse;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface AdminMapper {
     // TODO: Populate entity and DTO fields first before defining detailed mappings.
 
-    SystemConfiguration toEntity(SystemConfigurationDto dto);
+    SystemConfiguration toEntity(SystemConfigurationResponse dto);
 
-    SystemConfigurationDto toDto(SystemConfiguration entity);
+    SystemConfigurationResponse toDto(SystemConfiguration entity);
 
-    List<SystemConfigurationDto> toDtoList(List<SystemConfiguration> entities);
+    List<SystemConfigurationResponse> toDtoList(List<SystemConfiguration> entities);
 }

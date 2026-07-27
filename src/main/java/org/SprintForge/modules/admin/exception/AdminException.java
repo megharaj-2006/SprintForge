@@ -1,10 +1,11 @@
 package org.SprintForge.modules.admin.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.SprintForge.common.exception.BusinessException;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class AdminException extends RuntimeException {
+
+
+
+public class AdminException extends BusinessException {
     public AdminException(String message) {
         super(message);
     }

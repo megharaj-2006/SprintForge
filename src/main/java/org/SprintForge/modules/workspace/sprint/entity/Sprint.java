@@ -58,4 +58,13 @@ public class Sprint extends SoftDeleteEntity {
 
     @Column(name = "total_task_count")
     private Integer totalTaskCount = 0;
+
+    @Column(name = "order_index")
+    private Integer orderIndex = 0;
+
+    @Column(name = "archived_at")
+    private LocalDateTime archivedAt;
+
+    @Column(name = "cancelled_at")
+    private LocalDateTime cancelledAt;
 }

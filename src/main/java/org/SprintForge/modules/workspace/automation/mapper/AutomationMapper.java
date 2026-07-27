@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.automation.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.automation.entity.AutomationRule;
 import org.SprintForge.modules.workspace.automation.dto.request.AutomationRuleCreateRequest;
@@ -8,7 +10,7 @@ import org.SprintForge.modules.workspace.automation.dto.response.AutomationRuleR
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface AutomationMapper {
 
     @Mapping(target = "id", ignore = true)

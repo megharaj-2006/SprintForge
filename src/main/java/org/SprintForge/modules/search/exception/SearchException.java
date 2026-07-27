@@ -1,10 +1,11 @@
 package org.SprintForge.modules.search.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.SprintForge.common.exception.BusinessException;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class SearchException extends RuntimeException {
+
+
+
+public class SearchException extends BusinessException {
     public SearchException(String message) {
         super(message);
     }

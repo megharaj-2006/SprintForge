@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.timelog.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.timelog.entity.TimeEntry;
 import org.SprintForge.modules.workspace.timelog.dto.request.TimeEntryCreateRequest;
@@ -8,7 +10,7 @@ import org.SprintForge.modules.workspace.timelog.dto.response.TimeEntryResponse;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface TimeEntryMapper {
 
     @Mapping(target = "id", ignore = true)

@@ -1,18 +1,20 @@
 package org.SprintForge.modules.notification.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.notification.entity.Notification;
-import org.SprintForge.modules.notification.dto.NotificationDto;
+import org.SprintForge.modules.notification.dto.NotificationResponse;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface NotificationMapper {
     // TODO: Populate entity and DTO fields first before defining detailed mappings.
 
-    Notification toEntity(NotificationDto dto);
+    Notification toEntity(NotificationResponse dto);
 
-    NotificationDto toDto(Notification entity);
+    NotificationResponse toDto(Notification entity);
 
-    List<NotificationDto> toDtoList(List<Notification> entities);
+    List<NotificationResponse> toDtoList(List<Notification> entities);
 }

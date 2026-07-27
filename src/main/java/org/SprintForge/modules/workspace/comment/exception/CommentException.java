@@ -1,10 +1,11 @@
 package org.SprintForge.modules.workspace.comment.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.SprintForge.common.exception.BusinessException;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class CommentException extends RuntimeException {
+
+
+
+public class CommentException extends BusinessException {
     public CommentException(String message) {
         super(message);
     }

@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.wiki.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.wiki.entity.WikiPage;
 import org.SprintForge.modules.workspace.wiki.dto.request.WikiPageCreateRequest;
@@ -10,7 +12,7 @@ import org.SprintForge.modules.workspace.wiki.dto.response.WikiPageDetailRespons
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface WikiPageMapper {
 
     @Mapping(target = "id", ignore = true)

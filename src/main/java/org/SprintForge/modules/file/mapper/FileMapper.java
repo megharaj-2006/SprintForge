@@ -1,18 +1,20 @@
 package org.SprintForge.modules.file.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.file.entity.FileMetadata;
-import org.SprintForge.modules.file.dto.FileDto;
+import org.SprintForge.modules.file.dto.FileResponse;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface FileMapper {
     // TODO: Populate entity and DTO fields first before defining detailed mappings.
 
-    FileMetadata toEntity(FileDto dto);
+    FileMetadata toEntity(FileResponse dto);
 
-    FileDto toDto(FileMetadata entity);
+    FileResponse toDto(FileMetadata entity);
 
-    List<FileDto> toDtoList(List<FileMetadata> entities);
+    List<FileResponse> toDtoList(List<FileMetadata> entities);
 }

@@ -30,6 +30,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspacePreferenceService workspacePreferenceService;
     private final WorkspaceRepository workspaceRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
+    private final WorkspaceMemberService workspaceMemberService;
 
     @Override
     @Transactional
@@ -83,22 +84,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Transactional
     public void leaveWorkspace(Long id, Long userId) {
         Long actorId = getCurrentUserId();
-        if (actorId != null && !userId.equals(actorId)) {
-            throw new WorkspaceException("Access Denied: You cannot make another user leave the workspace.");
-        }
-
-        Workspace workspace = workspaceRepository.findById(id)
-                .orElseThrow(() -> new WorkspaceException("Workspace not found."));
-
-        if (workspace.getOwnerId().equals(userId)) {
-            throw new WorkspaceException("Workspace Owner cannot leave the workspace. Please transfer ownership first.");
-        }
-
-        WorkspaceMember member = workspaceMemberRepository.findByWorkspaceIdAndUserIdAndIsDeletedFalse(id, userId)
-                .orElseThrow(() -> new WorkspaceException("User is not a member of this workspace."));
-
-        member.markDeleted(actorId != null ? actorId.toString() : "SYSTEM");
-        workspaceMemberRepository.save(member);
+        workspaceMemberService.leaveWorkspace(id, userId, actorId);
     }
 
     @Override

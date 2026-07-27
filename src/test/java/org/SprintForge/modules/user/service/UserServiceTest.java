@@ -68,9 +68,9 @@ class UserServiceTest {
     void getCurrentUserProfile_Success() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(sampleUser));
         when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
-        when(userPreferenceService.getUserPreferences(1L)).thenReturn(new UserPreferenceDto());
+        when(userPreferenceService.getUserPreferences(1L)).thenReturn(new UserPreferenceResponse());
 
-        UserProfileResponseDto result = userService.getCurrentUserProfile(1L);
+        UserProfileResponse result = userService.getCurrentUserProfile(1L);
 
         assertNotNull(result);
         assertEquals("john_doe", result.getUsername());
@@ -88,7 +88,7 @@ class UserServiceTest {
     void getPublicUserProfile_Success() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(sampleUser));
 
-        PublicUserProfileDto result = userService.getPublicUserProfile(1L);
+        PublicUserProfileResponse result = userService.getPublicUserProfile(1L);
 
         assertNotNull(result);
         assertEquals("john_doe", result.getUsername());
@@ -97,7 +97,7 @@ class UserServiceTest {
 
     @Test
     void updateUserProfile_Success() {
-        UpdateProfileRequestDto request = UpdateProfileRequestDto.builder()
+        UpdateProfileRequest request = UpdateProfileRequest.builder()
                 .fullName("John Updated")
                 .bio("Senior Software Engineer")
                 .build();
@@ -105,7 +105,7 @@ class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(sampleUser));
         when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
 
-        UserProfileResponseDto result = userService.updateUserProfile(1L, request);
+        UserProfileResponse result = userService.updateUserProfile(1L, request);
 
         assertNotNull(result);
         assertEquals("John Updated", result.getFullName());
@@ -114,7 +114,7 @@ class UserServiceTest {
 
     @Test
     void updateUserProfile_UsernameAlreadyTaken() {
-        UpdateProfileRequestDto request = UpdateProfileRequestDto.builder()
+        UpdateProfileRequest request = UpdateProfileRequest.builder()
                 .username("taken_username")
                 .build();
 
@@ -128,7 +128,7 @@ class UserServiceTest {
     void checkUsernameAvailability_Available() {
         when(userRepository.existsByUsername("new_user")).thenReturn(false);
 
-        UsernameCheckResponseDto response = userService.checkUsernameAvailability("new_user", null);
+        UsernameCheckResponse response = userService.checkUsernameAvailability("new_user", null);
 
         assertTrue(response.isAvailable());
         assertEquals("Username is available", response.getMessage());
@@ -140,7 +140,7 @@ class UserServiceTest {
         when(userRepository.searchUsers("john", pageable))
                 .thenReturn(new PageImpl<>(List.of(sampleUser), pageable, 1));
 
-        UserSearchResponseDto response = userService.searchUsers("john", pageable);
+        UserSearchResponse response = userService.searchUsers("john", pageable);
 
         assertNotNull(response);
         assertEquals(1, response.getUsers().size());
@@ -149,7 +149,7 @@ class UserServiceTest {
 
     @Test
     void getUserPreferences_Success() {
-        UserPreferenceDto expected = UserPreferenceDto.builder()
+        UserPreferenceResponse expected = UserPreferenceResponse.builder()
                 .theme("DARK")
                 .language("en")
                 .timezone("UTC")
@@ -159,7 +159,7 @@ class UserServiceTest {
 
         when(userPreferenceService.getUserPreferences(1L)).thenReturn(expected);
 
-        UserPreferenceDto result = userService.getUserPreferences(1L);
+        UserPreferenceResponse result = userService.getUserPreferences(1L);
 
         assertNotNull(result);
         assertEquals("DARK", result.getTheme());

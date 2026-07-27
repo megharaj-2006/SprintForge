@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.analytics.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.analytics.entity.Dashboard;
 import org.SprintForge.modules.workspace.analytics.dto.request.DashboardCreateRequest;
@@ -8,7 +10,7 @@ import org.SprintForge.modules.workspace.analytics.dto.response.DashboardRespons
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface AnalyticsMapper {
 
     @Mapping(target = "id", ignore = true)

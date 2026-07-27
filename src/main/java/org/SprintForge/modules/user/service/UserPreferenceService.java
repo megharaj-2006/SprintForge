@@ -1,21 +1,21 @@
 package org.SprintForge.modules.user.service;
 
-import org.SprintForge.modules.user.dto.UserPreferenceDto;
+import org.SprintForge.modules.user.dto.UserPreferenceResponse;
 import org.SprintForge.modules.user.entity.User;
 
 public interface UserPreferenceService {
 
-    UserPreferenceDto getUserPreferences(Long userId);
+    UserPreferenceResponse getUserPreferences(Long userId);
 
-    UserPreferenceDto updateUserPreferences(Long userId, UserPreferenceDto preferenceDto);
+    UserPreferenceResponse updateUserPreferences(Long userId, UserPreferenceResponse preferenceDto);
 
-    UserPreferenceDto updateTheme(Long userId, String theme);
+    UserPreferenceResponse updateTheme(Long userId, String theme);
 
-    UserPreferenceDto updateLanguage(Long userId, String language);
+    UserPreferenceResponse updateLanguage(Long userId, String language);
 
-    UserPreferenceDto updateTimezone(Long userId, String timezone);
+    UserPreferenceResponse updateTimezone(Long userId, String timezone);
 
-    UserPreferenceDto resetUserPreferencesToDefault(Long userId);
+    UserPreferenceResponse resetUserPreferencesToDefault(Long userId);
 
-    UserPreferenceDto getOrInitializePreferences(User user);
+    UserPreferenceResponse getOrInitializePreferences(User user);
 }

@@ -1,5 +1,7 @@
 package org.SprintForge.modules.auth.exception;
 
+import org.SprintForge.common.exception.BusinessException;
+
 import org.SprintForge.common.exception.ErrorCode;
 import org.SprintForge.common.exception.UnauthorizedException;
 

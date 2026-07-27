@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.epic.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.epic.entity.Epic;
 import org.SprintForge.modules.workspace.epic.dto.request.EpicCreateRequest;
@@ -10,7 +12,7 @@ import org.SprintForge.modules.workspace.epic.dto.response.EpicSummaryResponse;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface EpicMapper {
 
     @Mapping(target = "id", ignore = true)

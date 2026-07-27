@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.SprintForge.modules.workspace.sprint.entity.enums.SprintStatus;
 
 import java.time.LocalDate;
 
@@ -21,7 +20,6 @@ public class SprintUpdateRequest {
     @Size(max = 1000, message = "Goal must not exceed 1000 characters")
     private String goal;
 
-    private SprintStatus status;
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer plannedStoryPoints;

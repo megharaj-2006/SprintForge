@@ -6,9 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.SprintForge.common.entity.SoftDeleteEntity;
+import org.SprintForge.modules.workspace.project.entity.Project;
+import org.SprintForge.modules.workspace.sprint.entity.Sprint;
+import org.SprintForge.modules.workspace.task.entity.enums.TaskPriority;
+import org.SprintForge.modules.workspace.task.entity.enums.TaskStatus;
 import org.SprintForge.modules.workspace.task.entity.enums.TaskType;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,23 +22,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Task extends SoftDeleteEntity {
 
-    @Column(name = "workspace_id", nullable = false)
-    private Long workspaceId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 
-    @Column(name = "project_id")
-    private Long projectId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sprint_id")
+    private Sprint sprint;
 
-    @Column(name = "sprint_id")
-    private Long sprintId;
-
-    @Column(name = "epic_id")
-    private Long epicId;
-
-    @Column(name = "parent_task_id")
-    private Long parentTaskId;
-
-    @Column(name = "task_number")
-    private String taskNumber;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_task_id")
+    private Task parentTask;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -43,52 +40,45 @@ public class Task extends SoftDeleteEntity {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "identifier", unique = true, nullable = false)
+    private String identifier;
+
     @Enumerated(EnumType.STRING)
-    @Column(name = "type")
+    @Column(name = "status", nullable = false)
+    private TaskStatus status = TaskStatus.TODO;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "priority", nullable = false)
+    private TaskPriority priority = TaskPriority.MEDIUM;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
     private TaskType type = TaskType.TASK;
 
-    @Column(name = "status_id")
-    private Long statusId;
+    @Column(name = "due_date")
+    private LocalDateTime dueDate;
 
-    @Column(name = "priority_id")
-    private Long priorityId;
+    @Column(name = "estimated_hours")
+    private Double estimatedHours;
 
-    @Column(name = "reporter_id")
-    private Long reporterId;
-
-    @Column(name = "creator_id")
-    private Long creatorId;
-
-    @Column(name = "assignee_id")
-    private Long assigneeId;
-
-    @Column(name = "estimate_hours")
-    private Double estimateHours;
-
-    @Column(name = "logged_hours")
-    private Double loggedHours = 0.0;
+    @Column(name = "actual_hours")
+    private Double actualHours;
 
     @Column(name = "story_points")
     private Integer storyPoints;
 
-    @Column(name = "progress_percentage")
-    private Double progressPercentage = 0.0;
+    @Column(name = "is_archived", nullable = false)
+    private Boolean archived = false;
 
-    @Column(name = "start_date")
-    private LocalDate startDate;
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<TaskAssignment> assignments = new java.util.ArrayList<>();
 
-    @Column(name = "due_date")
-    private LocalDate dueDate;
+    @OneToMany(mappedBy = "predecessorTask", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<TaskDependency> successorDependencies = new java.util.ArrayList<>();
 
-    @Column(name = "completed_at")
-    private LocalDateTime completedAt;
+    @OneToMany(mappedBy = "successorTask", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<TaskDependency> predecessorDependencies = new java.util.ArrayList<>();
 
-    @Column(name = "position")
-    private Integer position;
-
-    @Column(name = "is_archived")
-    private Boolean isArchived = false;
-
-    @Column(name = "is_template")
-    private Boolean isTemplate = false;
+    @OneToMany(mappedBy = "parentTask", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Task> subtasks = new java.util.ArrayList<>();
 }

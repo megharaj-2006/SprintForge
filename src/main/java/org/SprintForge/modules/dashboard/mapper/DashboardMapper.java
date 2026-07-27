@@ -1,18 +1,20 @@
 package org.SprintForge.modules.dashboard.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.dashboard.entity.DashboardMetrics;
-import org.SprintForge.modules.dashboard.dto.DashboardMetricsDto;
+import org.SprintForge.modules.dashboard.dto.DashboardMetricsResponse;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface DashboardMapper {
     // TODO: Populate entity and DTO fields first before defining detailed mappings.
 
-    DashboardMetrics toEntity(DashboardMetricsDto dto);
+    DashboardMetrics toEntity(DashboardMetricsResponse dto);
 
-    DashboardMetricsDto toDto(DashboardMetrics entity);
+    DashboardMetricsResponse toDto(DashboardMetrics entity);
 
-    List<DashboardMetricsDto> toDtoList(List<DashboardMetrics> entities);
+    List<DashboardMetricsResponse> toDtoList(List<DashboardMetrics> entities);
 }

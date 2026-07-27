@@ -1,7 +1,8 @@
 package org.SprintForge.modules.workspace.task.entity.enums;
 
 public enum TaskDependencyType {
-    BLOCKS,
-    RELATES_TO,
-    DUPLICATES
+    FINISH_TO_START,
+    START_TO_START,
+    FINISH_TO_FINISH,
+    START_TO_FINISH
 }

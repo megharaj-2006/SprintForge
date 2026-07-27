@@ -1,10 +1,11 @@
 package org.SprintForge.modules.workspace.kanban.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.SprintForge.common.exception.BusinessException;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class KanbanException extends RuntimeException {
+
+
+
+public class KanbanException extends BusinessException {
     public KanbanException(String message) {
         super(message);
     }

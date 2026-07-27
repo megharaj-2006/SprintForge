@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.milestone.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.milestone.entity.Milestone;
 import org.SprintForge.modules.workspace.milestone.dto.request.MilestoneCreateRequest;
@@ -10,7 +12,7 @@ import org.SprintForge.modules.workspace.milestone.dto.response.MilestoneDetailR
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface MilestoneMapper {
 
     @Mapping(target = "id", ignore = true)

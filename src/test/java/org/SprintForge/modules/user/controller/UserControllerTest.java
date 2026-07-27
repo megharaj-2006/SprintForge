@@ -2,9 +2,9 @@ package org.SprintForge.modules.user.controller;
 
 import org.SprintForge.common.exception.GlobalExceptionHandler;
 import org.SprintForge.common.util.JsonUtil;
-import org.SprintForge.modules.user.dto.UserProfileResponseDto;
-import org.SprintForge.modules.user.dto.UsernameCheckResponseDto;
-import org.SprintForge.modules.user.dto.UpdateProfileRequestDto;
+import org.SprintForge.modules.user.dto.UserProfileResponse;
+import org.SprintForge.modules.user.dto.UsernameCheckResponse;
+import org.SprintForge.modules.user.dto.UpdateProfileRequest;
 import org.SprintForge.modules.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ class UserControllerTest {
 
     @Test
     void getCurrentUserProfile_ShouldReturn200() throws Exception {
-        UserProfileResponseDto dto = UserProfileResponseDto.builder()
+        UserProfileResponse dto = UserProfileResponse.builder()
                 .id(1L)
                 .username("john_doe")
                 .email("john@example.com")
@@ -64,7 +64,7 @@ class UserControllerTest {
 
     @Test
     void checkUsernameAvailability_ShouldReturn200() throws Exception {
-        UsernameCheckResponseDto response = UsernameCheckResponseDto.builder()
+        UsernameCheckResponse response = UsernameCheckResponse.builder()
                 .username("new_user")
                 .isAvailable(true)
                 .message("Username is available")
@@ -79,20 +79,20 @@ class UserControllerTest {
 
     @Test
     void updateUserProfile_WithValidData_ShouldReturn200() throws Exception {
-        UpdateProfileRequestDto request = UpdateProfileRequestDto.builder()
+        UpdateProfileRequest request = UpdateProfileRequest.builder()
                 .username("valid_username")
                 .fullName("John Doe")
                 .displayName("John D.")
                 .bio("Software Engineer")
                 .build();
 
-        UserProfileResponseDto response = UserProfileResponseDto.builder()
+        UserProfileResponse response = UserProfileResponse.builder()
                 .id(1L)
                 .username("valid_username")
                 .displayName("John D.")
                 .build();
 
-        when(userService.updateUserProfile(eq(1L), any(UpdateProfileRequestDto.class))).thenReturn(response);
+        when(userService.updateUserProfile(eq(1L), any(UpdateProfileRequest.class))).thenReturn(response);
 
         mockMvc.perform(put("/api/v1/users/me")
                         .header("X-User-Id", "1")
@@ -105,7 +105,7 @@ class UserControllerTest {
 
     @Test
     void updateUserProfile_WithInvalidUsername_ShouldReturn400() throws Exception {
-        UpdateProfileRequestDto request = UpdateProfileRequestDto.builder()
+        UpdateProfileRequest request = UpdateProfileRequest.builder()
                 .username("admin") // Reserved word
                 .fullName("John Doe")
                 .build();

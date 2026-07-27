@@ -2,7 +2,7 @@ package org.SprintForge.common.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class ApiException extends RuntimeException {
+public class ApiException extends ApplicationException {
     private final HttpStatus status;
     private final ErrorCode errorCode;
 

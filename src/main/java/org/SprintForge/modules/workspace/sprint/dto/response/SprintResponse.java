@@ -29,6 +29,9 @@ public class SprintResponse {
     private Double capacity;
     private Integer completedTaskCount;
     private Integer totalTaskCount;
+    private Integer orderIndex;
+    private LocalDateTime archivedAt;
+    private LocalDateTime cancelledAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

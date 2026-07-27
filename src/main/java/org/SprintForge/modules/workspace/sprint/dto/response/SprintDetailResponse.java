@@ -8,6 +8,7 @@ import org.SprintForge.modules.workspace.sprint.entity.enums.SprintStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -31,6 +32,10 @@ public class SprintDetailResponse {
     private Integer completedTaskCount;
     private Integer totalTaskCount;
     private Double progressPercentage;
+    private Integer orderIndex;
+    private LocalDateTime archivedAt;
+    private LocalDateTime cancelledAt;
+    private List<SprintGoalResponse> goals;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

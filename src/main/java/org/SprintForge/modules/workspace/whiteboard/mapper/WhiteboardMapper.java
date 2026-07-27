@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.whiteboard.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.whiteboard.entity.Whiteboard;
 import org.SprintForge.modules.workspace.whiteboard.dto.request.WhiteboardCreateRequest;
@@ -8,7 +10,7 @@ import org.SprintForge.modules.workspace.whiteboard.dto.response.WhiteboardRespo
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface WhiteboardMapper {
 
     @Mapping(target = "id", ignore = true)

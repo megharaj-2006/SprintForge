@@ -1,18 +1,20 @@
 package org.SprintForge.modules.workspace.project.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.project.dto.request.ProjectCreateRequest;
 import org.SprintForge.modules.workspace.project.dto.request.ProjectUpdateRequest;
-import org.SprintForge.modules.workspace.project.dto.response.ProjectDetailResponse;
-import org.SprintForge.modules.workspace.project.dto.response.ProjectMemberResponse;
-import org.SprintForge.modules.workspace.project.dto.response.ProjectResponse;
-import org.SprintForge.modules.workspace.project.dto.response.ProjectSummaryResponse;
+import org.SprintForge.modules.workspace.project.dto.request.ProjectSettingsRequest;
+import org.SprintForge.modules.workspace.project.dto.response.*;
 import org.SprintForge.modules.workspace.project.entity.Project;
 import org.SprintForge.modules.workspace.project.entity.ProjectMember;
+import org.SprintForge.modules.workspace.project.entity.ProjectSettings;
+import org.SprintForge.modules.workspace.project.entity.ProjectRole;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface ProjectMapper {
 
     @Mapping(target = "id", ignore = true)
@@ -64,4 +66,27 @@ public interface ProjectMapper {
     ProjectMemberResponse toResponse(ProjectMember entity);
 
     List<ProjectMemberResponse> toMemberResponseList(List<ProjectMember> entities);
+
+    ProjectSettingsResponse toResponse(ProjectSettings entity);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "projectId", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "deletedAt", ignore = true)
+    @Mapping(target = "deletedBy", ignore = true)
+    void updateEntity(ProjectSettingsRequest dto, @MappingTarget ProjectSettings entity);
+
+    @Mapping(target = "userName", ignore = true)
+    @Mapping(target = "roleName", ignore = true)
+    ProjectMemberSummaryResponse toSummaryResponse(ProjectMember entity);
+
+    List<ProjectMemberSummaryResponse> toSummaryResponseList(List<ProjectMember> entities);
+
+    ProjectRoleResponse toResponse(ProjectRole entity);
+
+    List<ProjectRoleResponse> toRoleResponseList(List<ProjectRole> entities);
 }

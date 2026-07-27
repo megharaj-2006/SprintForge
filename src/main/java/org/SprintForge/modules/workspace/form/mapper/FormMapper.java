@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.form.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.form.entity.Form;
 import org.SprintForge.modules.workspace.form.dto.request.FormCreateRequest;
@@ -10,7 +12,7 @@ import org.SprintForge.modules.workspace.form.dto.response.FormDetailResponse;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface FormMapper {
 
     @Mapping(target = "id", ignore = true)

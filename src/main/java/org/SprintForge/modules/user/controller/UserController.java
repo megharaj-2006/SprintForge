@@ -1,5 +1,7 @@
 package org.SprintForge.modules.user.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Tag(name = "User Profile Controller", description = "Core APIs for managing user profiles and searching users")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class UserController {
 
     private final UserService userService;
@@ -29,9 +32,9 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Account deactivated or deleted")
     })
     @GetMapping("/me")
-    public ResponseEntity<UserProfileResponseDto> getCurrentUserProfile(
+    public ResponseEntity<UserProfileResponse> getCurrentUserProfile(
             @RequestHeader(value = "X-User-Id", defaultValue = "1") Long currentUserId) {
-        UserProfileResponseDto profile = userService.getCurrentUserProfile(currentUserId);
+        UserProfileResponse profile = userService.getCurrentUserProfile(currentUserId);
         return ResponseEntity.ok(profile);
     }
 
@@ -41,8 +44,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Public profile not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<PublicUserProfileDto> getPublicUserProfile(@PathVariable("id") Long id) {
-        PublicUserProfileDto publicProfile = userService.getPublicUserProfile(id);
+    public ResponseEntity<PublicUserProfileResponse> getPublicUserProfile(@PathVariable("id") Long id) {
+        PublicUserProfileResponse publicProfile = userService.getPublicUserProfile(id);
         return ResponseEntity.ok(publicProfile);
     }
 
@@ -53,27 +56,27 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Username already taken")
     })
     @PutMapping("/me")
-    public ResponseEntity<UserProfileResponseDto> updateUserProfile(
+    public ResponseEntity<UserProfileResponse> updateUserProfile(
             @RequestHeader(value = "X-User-Id", defaultValue = "1") Long currentUserId,
-            @Valid @RequestBody UpdateProfileRequestDto request) {
-        UserProfileResponseDto updatedProfile = userService.updateUserProfile(currentUserId, request);
+            @Valid @RequestBody UpdateProfileRequest request) {
+        UserProfileResponse updatedProfile = userService.updateUserProfile(currentUserId, request);
         return ResponseEntity.ok(updatedProfile);
     }
 
     @Operation(summary = "Check username availability", description = "Verifies if a username format is valid and not already taken.")
     @ApiResponse(responseCode = "200", description = "Username availability status returned")
     @GetMapping("/check-username")
-    public ResponseEntity<UsernameCheckResponseDto> checkUsernameAvailability(
+    public ResponseEntity<UsernameCheckResponse> checkUsernameAvailability(
             @RequestParam("username") String username,
             @RequestHeader(value = "X-User-Id", required = false) Long currentUserId) {
-        UsernameCheckResponseDto response = userService.checkUsernameAvailability(username, currentUserId);
+        UsernameCheckResponse response = userService.checkUsernameAvailability(username, currentUserId);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Search users", description = "Paginated search across users by username, email, or full name.")
     @ApiResponse(responseCode = "200", description = "Paginated user search results returned")
     @GetMapping("/search")
-    public ResponseEntity<UserSearchResponseDto> searchUsers(
+    public ResponseEntity<UserSearchResponse> searchUsers(
             @RequestParam(value = "query", required = false, defaultValue = "") String query,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
@@ -82,7 +85,7 @@ public class UserController {
 
         Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        UserSearchResponseDto result = userService.searchUsers(query, pageable);
+        UserSearchResponse result = userService.searchUsers(query, pageable);
         return ResponseEntity.ok(result);
     }
 }

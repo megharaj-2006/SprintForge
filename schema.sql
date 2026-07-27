@@ -177,8 +177,12 @@ CREATE TABLE workspace_invitations (
     invitee_email VARCHAR(255) NOT NULL,
     inviter_id BIGINT NOT NULL REFERENCES users(id),
     role_id BIGINT NOT NULL REFERENCES roles(id),
-    status VARCHAR(50) NOT NULL DEFAULT 'PENDING', -- PENDING, ACCEPTED, REJECTED, EXPIRED
+    status VARCHAR(50) NOT NULL DEFAULT 'PENDING', -- PENDING, ACCEPTED, REJECTED, EXPIRED, CANCELLED
+    token VARCHAR(255) UNIQUE,
+    message TEXT,
     expiry_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    accepted_at TIMESTAMP WITHOUT TIME ZONE,
+    rejected_at TIMESTAMP WITHOUT TIME ZONE,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITHOUT TIME ZONE,
     created_by VARCHAR(255),
@@ -187,12 +191,29 @@ CREATE TABLE workspace_invitations (
     version BIGINT DEFAULT 0
 );
 
+
 -- 10. Projects
 CREATE TABLE projects (
     id BIGSERIAL PRIMARY KEY,
     workspace_id BIGINT NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL,
+    project_key VARCHAR(10) NOT NULL,
     description TEXT,
+    icon VARCHAR(255),
+    cover_image VARCHAR(255),
+    color VARCHAR(50),
+    visibility VARCHAR(50) DEFAULT 'WORKSPACE',
+    status VARCHAR(50) DEFAULT 'PLANNING',
+    owner_id BIGINT REFERENCES users(id),
+    start_date DATE,
+    target_end_date DATE,
+    completed_at TIMESTAMP WITHOUT TIME ZONE,
+    progress_percentage DOUBLE PRECISION DEFAULT 0.0,
+    budget DOUBLE PRECISION,
+    currency VARCHAR(10) DEFAULT 'USD',
+    estimated_hours DOUBLE PRECISION,
+    logged_hours DOUBLE PRECISION DEFAULT 0.0,
+    is_template BOOLEAN NOT NULL DEFAULT FALSE,
     is_archived BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITHOUT TIME ZONE,
@@ -202,19 +223,38 @@ CREATE TABLE projects (
     version BIGINT DEFAULT 0
 );
 
--- 11. Project Members
+-- 11. Project Roles
+CREATE TABLE project_roles (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    name VARCHAR(50) NOT NULL,
+    description VARCHAR(255),
+    color VARCHAR(50),
+    permissions TEXT,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
+    created_by VARCHAR(255),
+    updated_by VARCHAR(255),
+    is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    version BIGINT DEFAULT 0
+);
+
+-- 12. Project Members
 CREATE TABLE project_members (
     id BIGSERIAL PRIMARY KEY,
     project_id BIGINT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    role_id BIGINT NOT NULL REFERENCES roles(id),
+    workspace_member_id BIGINT NOT NULL REFERENCES workspace_members(id) ON DELETE CASCADE,
+    role_id BIGINT REFERENCES project_roles(id) ON DELETE SET NULL,
+    status VARCHAR(50) DEFAULT 'ACTIVE',
+    favorite BOOLEAN DEFAULT FALSE,
+    notifications_enabled BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITHOUT TIME ZONE,
     created_by VARCHAR(255),
     updated_by VARCHAR(255),
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     version BIGINT DEFAULT 0,
-    CONSTRAINT uq_project_member UNIQUE (project_id, user_id)
+    CONSTRAINT uq_project_member UNIQUE (project_id, workspace_member_id)
 );
 
 -- 12. Project Categories
@@ -253,7 +293,17 @@ CREATE TABLE sprints (
     goal TEXT,
     start_date DATE,
     end_date DATE,
-    status VARCHAR(50) NOT NULL DEFAULT 'PLANNED', -- PLANNED, ACTIVE, COMPLETED
+    status VARCHAR(50) NOT NULL DEFAULT 'PLANNED', -- PLANNED, ACTIVE, COMPLETED, CANCELLED, ARCHIVED
+    completed_at TIMESTAMP WITHOUT TIME ZONE,
+    planned_story_points INTEGER DEFAULT 0,
+    completed_story_points INTEGER DEFAULT 0,
+    velocity DOUBLE PRECISION DEFAULT 0.0,
+    capacity DOUBLE PRECISION DEFAULT 0.0,
+    completed_task_count INTEGER DEFAULT 0,
+    total_task_count INTEGER DEFAULT 0,
+    order_index INTEGER DEFAULT 0,
+    archived_at TIMESTAMP WITHOUT TIME ZONE,
+    cancelled_at TIMESTAMP WITHOUT TIME ZONE,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITHOUT TIME ZONE,
     created_by VARCHAR(255),

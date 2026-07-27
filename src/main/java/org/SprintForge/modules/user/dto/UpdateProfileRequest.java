@@ -1,0 +1,27 @@
+package org.SprintForge.modules.user.dto;
+
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.SprintForge.common.validation.annotation.ValidUsername;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UpdateProfileRequest {
+
+    @ValidUsername
+    private String username;
+
+    @Size(max = 100, message = "Full name must not exceed 100 characters")
+    private String fullName;
+
+    @Size(max = 100, message = "Display name must not exceed 100 characters")
+    private String displayName;
+
+    @Size(max = 500, message = "Bio must not exceed 500 characters")
+    private String bio;
+}

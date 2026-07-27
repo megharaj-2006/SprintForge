@@ -1,10 +1,12 @@
 package org.SprintForge.modules.auth.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.auth.dto.SignupRequest;
 import org.SprintForge.modules.user.entity.User;
 
-@Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
+@Mapper(config = GlobalMapperConfig.class, builder = @Builder(disableBuilder = true))
 public interface AuthMapper {
 
     @Mapping(target = "id", ignore = true)

@@ -1,7 +1,7 @@
 package org.SprintForge.modules.user.service;
 
 import org.SprintForge.modules.activity.repository.ActivityLogRepository;
-import org.SprintForge.modules.user.dto.UserPreferenceDto;
+import org.SprintForge.modules.user.dto.UserPreferenceResponse;
 import org.SprintForge.modules.user.entity.User;
 import org.SprintForge.modules.user.entity.UserPreference;
 import org.SprintForge.modules.user.mapper.UserMapper;
@@ -62,7 +62,7 @@ class UserPreferenceServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(sampleUser));
         when(userPreferenceRepository.findByUserId(1L)).thenReturn(Optional.of(samplePreference));
 
-        UserPreferenceDto dto = userPreferenceService.getUserPreferences(1L);
+        UserPreferenceResponse dto = userPreferenceService.getUserPreferences(1L);
 
         assertNotNull(dto);
         assertEquals("LIGHT", dto.getTheme());
@@ -75,7 +75,7 @@ class UserPreferenceServiceTest {
         when(userPreferenceRepository.findByUserId(1L)).thenReturn(Optional.of(samplePreference));
         when(userPreferenceRepository.save(any(UserPreference.class))).thenAnswer(i -> i.getArgument(0));
 
-        UserPreferenceDto updated = userPreferenceService.updateTheme(1L, "DARK");
+        UserPreferenceResponse updated = userPreferenceService.updateTheme(1L, "DARK");
 
         assertNotNull(updated);
         assertEquals("DARK", updated.getTheme());
@@ -90,7 +90,7 @@ class UserPreferenceServiceTest {
         when(userPreferenceRepository.findByUserId(1L)).thenReturn(Optional.of(samplePreference));
         when(userPreferenceRepository.save(any(UserPreference.class))).thenAnswer(i -> i.getArgument(0));
 
-        UserPreferenceDto reset = userPreferenceService.resetUserPreferencesToDefault(1L);
+        UserPreferenceResponse reset = userPreferenceService.resetUserPreferencesToDefault(1L);
 
         assertNotNull(reset);
         assertEquals("LIGHT", reset.getTheme());

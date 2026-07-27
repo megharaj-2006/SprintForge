@@ -1,5 +1,7 @@
 package org.SprintForge.modules.user.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.user.dto.*;
 import org.SprintForge.modules.user.entity.User;
@@ -8,7 +10,7 @@ import org.SprintForge.modules.user.entity.UserPreference;
 import java.util.Collections;
 import java.util.List;
 
-@Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
+@Mapper(config = GlobalMapperConfig.class, builder = @Builder(disableBuilder = true))
 public interface UserMapper {
 
     @Mapping(target = "roleName", source = "role.name")
@@ -16,13 +18,13 @@ public interface UserMapper {
     @Mapping(target = "preferences", ignore = true)
     @Mapping(target = "stats", ignore = true)
     @Mapping(target = "displayName", ignore = true)
-    UserProfileResponseDto toProfileResponseDto(User user);
+    UserProfileResponse toProfileResponseDto(User user);
 
-    default UserProfileResponseDto toProfileResponseDto(User user, UserPreferenceDto preferences, UserStatisticsDto stats) {
+    default UserProfileResponse toProfileResponseDto(User user, UserPreferenceResponse preferences, UserStatisticsResponse stats) {
         if (user == null) {
             return null;
         }
-        UserProfileResponseDto dto = toProfileResponseDto(user);
+        UserProfileResponse dto = toProfileResponseDto(user);
         dto.setPreferences(preferences);
         dto.setStats(stats);
         
@@ -41,10 +43,10 @@ public interface UserMapper {
 
     @Mapping(target = "roleName", source = "role.name")
     @Mapping(target = "displayName", ignore = true)
-    PublicUserProfileDto toPublicProfileDto(User user);
+    PublicUserProfileResponse toPublicProfileDto(User user);
 
     @AfterMapping
-    default void setPublicDisplayName(User user, @MappingTarget PublicUserProfileDto builder) {
+    default void setPublicDisplayName(User user, @MappingTarget PublicUserProfileResponse builder) {
         if (user != null) {
             String displayName = user.getDisplayName() != null && !user.getDisplayName().isBlank()
                     ? user.getDisplayName()
@@ -54,7 +56,7 @@ public interface UserMapper {
     }
 
     @AfterMapping
-    default void setProfileDisplayName(User user, @MappingTarget UserProfileResponseDto builder) {
+    default void setProfileDisplayName(User user, @MappingTarget UserProfileResponse builder) {
         if (user != null) {
             String displayName = user.getDisplayName() != null && !user.getDisplayName().isBlank()
                     ? user.getDisplayName()
@@ -68,7 +70,7 @@ public interface UserMapper {
         }
     }
 
-    UserPreferenceDto toPreferenceDto(UserPreference preference);
+    UserPreferenceResponse toPreferenceDto(UserPreference preference);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
@@ -90,5 +92,5 @@ public interface UserMapper {
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "lastLogin", ignore = true)
     @Mapping(target = "lastActiveAt", ignore = true)
-    void updateEntity(UpdateProfileRequestDto dto, @MappingTarget User user);
+    void updateEntity(UpdateProfileRequest dto, @MappingTarget User user);
 }

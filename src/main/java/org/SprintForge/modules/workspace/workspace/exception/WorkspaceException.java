@@ -1,10 +1,11 @@
 package org.SprintForge.modules.workspace.workspace.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.SprintForge.common.exception.BusinessException;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class WorkspaceException extends RuntimeException {
+
+
+
+public class WorkspaceException extends BusinessException {
     public WorkspaceException(String message) {
         super(message);
     }

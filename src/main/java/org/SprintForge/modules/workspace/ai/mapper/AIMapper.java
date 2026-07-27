@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.ai.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.ai.entity.AISuggestion;
 import org.SprintForge.modules.workspace.ai.dto.request.AISuggestionRequest;
@@ -7,7 +9,7 @@ import org.SprintForge.modules.workspace.ai.dto.response.AISuggestionResponse;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface AIMapper {
 
     @Mapping(target = "id", ignore = true)

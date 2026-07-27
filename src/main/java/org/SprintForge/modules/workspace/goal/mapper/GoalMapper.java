@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.goal.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.goal.entity.ProjectGoal;
 import org.SprintForge.modules.workspace.goal.dto.request.GoalCreateRequest;
@@ -10,7 +12,7 @@ import org.SprintForge.modules.workspace.goal.dto.response.GoalDetailResponse;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface GoalMapper {
 
     @Mapping(target = "id", ignore = true)

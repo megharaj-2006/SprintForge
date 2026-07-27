@@ -21,7 +21,7 @@ public class WorkspaceInvitation extends SoftDeleteEntity {
     @Column(name = "workspace_id", nullable = false)
     private Long workspaceId;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "invitee_email", nullable = false)
     private String email;
 
     @Column(name = "invited_user_id")
@@ -30,11 +30,11 @@ public class WorkspaceInvitation extends SoftDeleteEntity {
     @Column(name = "role_id")
     private Long roleId;
 
-    @Column(name = "invited_by")
+    @Column(name = "inviter_id", nullable = false)
     private Long invitedBy;
 
     @Column(name = "token", unique = true)
-    private String token;
+    private String inviteToken;
 
     @Column(name = "message", columnDefinition = "TEXT")
     private String message;
@@ -43,6 +43,12 @@ public class WorkspaceInvitation extends SoftDeleteEntity {
     @Column(name = "status")
     private WorkspaceInvitationStatus status = WorkspaceInvitationStatus.PENDING;
 
-    @Column(name = "expires_at")
+    @Column(name = "expiry_date", nullable = false)
     private LocalDateTime expiresAt;
+
+    @Column(name = "accepted_at")
+    private LocalDateTime acceptedAt;
+
+    @Column(name = "rejected_at")
+    private LocalDateTime rejectedAt;
 }

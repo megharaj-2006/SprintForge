@@ -15,6 +15,7 @@ import java.time.LocalDate;
 public class SprintSummaryResponse {
 
     private Long id;
+    private Long projectId;
     private String name;
     private SprintStatus status;
     private LocalDate startDate;

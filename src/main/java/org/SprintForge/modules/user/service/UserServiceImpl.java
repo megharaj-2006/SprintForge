@@ -45,21 +45,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserProfileResponseDto getCurrentUserProfile(Long userId) {
+    public UserProfileResponse getCurrentUserProfile(Long userId) {
         User user = getUserOrThrow(userId);
         validateUserActive(user);
         user.setLastActiveAt(LocalDateTime.now());
         User saved = userRepository.save(user);
 
-        UserPreferenceDto preferences = userPreferenceService.getUserPreferences(userId);
-        UserStatisticsDto stats = getUserStatistics(userId);
+        UserPreferenceResponse preferences = userPreferenceService.getUserPreferences(userId);
+        UserStatisticsResponse stats = getUserStatistics(userId);
 
         return userMapper.toProfileResponseDto(saved, preferences, stats);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PublicUserProfileDto getPublicUserProfile(Long userId) {
+    public PublicUserProfileResponse getPublicUserProfile(Long userId) {
         User user = getUserOrThrow(userId);
         if (user.isDeleted()) {
             throw new UserNotFoundException("Public profile not available for deleted user.");
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserProfileResponseDto updateUserProfile(Long userId, UpdateProfileRequestDto request) {
+    public UserProfileResponse updateUserProfile(Long userId, UpdateProfileRequest request) {
         User user = getUserOrThrow(userId);
         validateUserActive(user);
 
@@ -101,9 +101,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UsernameCheckResponseDto checkUsernameAvailability(String username, Long currentUserId) {
+    public UsernameCheckResponse checkUsernameAvailability(String username, Long currentUserId) {
         if (username == null || username.trim().isEmpty()) {
-            return UsernameCheckResponseDto.builder()
+            return UsernameCheckResponse.builder()
                     .username(username)
                     .isAvailable(false)
                     .message("Username cannot be empty")
@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
                 ? userRepository.existsByUsernameAndIdNot(trimmed, currentUserId)
                 : userRepository.existsByUsername(trimmed);
 
-        return UsernameCheckResponseDto.builder()
+        return UsernameCheckResponse.builder()
                 .username(trimmed)
                 .isAvailable(!exists)
                 .message(exists ? "Username is already taken" : "Username is available")
@@ -124,15 +124,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserSearchResponseDto searchUsers(String query, Pageable pageable) {
+    public UserSearchResponse searchUsers(String query, Pageable pageable) {
         String searchQuery = (query == null) ? "" : query.trim();
         Page<User> userPage = userRepository.searchUsers(searchQuery, pageable);
 
-        List<PublicUserProfileDto> profiles = userPage.getContent().stream()
+        List<PublicUserProfileResponse> profiles = userPage.getContent().stream()
                 .map(userMapper::toPublicProfileDto)
                 .collect(Collectors.toList());
 
-        return UserSearchResponseDto.builder()
+        return UserSearchResponse.builder()
                 .users(profiles)
                 .page(userPage.getNumber())
                 .size(userPage.getSize())
@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserProfileResponseDto uploadProfileAvatar(Long userId, MultipartFile file) {
+    public UserProfileResponse uploadProfileAvatar(Long userId, MultipartFile file) {
         User user = getUserOrThrow(userId);
         validateUserActive(user);
 
@@ -189,7 +189,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserProfileResponseDto removeProfileAvatar(Long userId) {
+    public UserProfileResponse removeProfileAvatar(Long userId) {
         User user = getUserOrThrow(userId);
         validateUserActive(user);
 
@@ -212,13 +212,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserPreferenceDto getUserPreferences(Long userId) {
+    public UserPreferenceResponse getUserPreferences(Long userId) {
         return userPreferenceService.getUserPreferences(userId);
     }
 
     @Override
     @Transactional
-    public UserPreferenceDto updateUserPreferences(Long userId, UserPreferenceDto preferenceDto) {
+    public UserPreferenceResponse updateUserPreferences(Long userId, UserPreferenceResponse preferenceDto) {
         User user = getUserOrThrow(userId);
         validateUserActive(user);
         return userPreferenceService.updateUserPreferences(userId, preferenceDto);
@@ -237,7 +237,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserProfileResponseDto restoreDeletedAccount(Long userId) {
+    public UserProfileResponse restoreDeletedAccount(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -252,10 +252,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserStatisticsDto getUserStatistics(Long userId) {
+    public UserStatisticsResponse getUserStatistics(Long userId) {
         getUserOrThrow(userId);
         // Returns basic user metrics for dashboard analytics
-        return UserStatisticsDto.builder()
+        return UserStatisticsResponse.builder()
                 .userId(userId)
                 .totalWorkspaces(0)
                 .totalProjects(0)
@@ -267,7 +267,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserActivityDto> getUserActivityFeed(Long userId, Pageable pageable) {
+    public List<UserActivityResponse> getUserActivityFeed(Long userId, Pageable pageable) {
         getUserOrThrow(userId);
         // Retrieve activity logs for user if any
         return new ArrayList<>();
@@ -275,14 +275,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDataExportDto exportUserData(Long userId) {
+    public UserDataExportResponse exportUserData(Long userId) {
         User user = getUserOrThrow(userId);
-        UserProfileResponseDto profile = userMapper.toProfileResponseDto(user);
-        UserPreferenceDto preferences = getUserPreferences(userId);
-        UserStatisticsDto stats = getUserStatistics(userId);
-        List<UserActivityDto> activities = getUserActivityFeed(userId, Pageable.unpaged());
+        UserProfileResponse profile = userMapper.toProfileResponseDto(user);
+        UserPreferenceResponse preferences = getUserPreferences(userId);
+        UserStatisticsResponse stats = getUserStatistics(userId);
+        List<UserActivityResponse> activities = getUserActivityFeed(userId, Pageable.unpaged());
 
-        return UserDataExportDto.builder()
+        return UserDataExportResponse.builder()
                 .profile(profile)
                 .preferences(preferences)
                 .statistics(stats)
@@ -304,7 +304,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserProfileResponseDto reactivateAccount(Long userId) {
+    public UserProfileResponse reactivateAccount(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 

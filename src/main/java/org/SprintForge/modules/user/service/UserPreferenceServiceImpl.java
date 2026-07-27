@@ -3,7 +3,7 @@ package org.SprintForge.modules.user.service;
 import lombok.RequiredArgsConstructor;
 import org.SprintForge.modules.activity.entity.ActivityLog;
 import org.SprintForge.modules.activity.repository.ActivityLogRepository;
-import org.SprintForge.modules.user.dto.UserPreferenceDto;
+import org.SprintForge.modules.user.dto.UserPreferenceResponse;
 import org.SprintForge.modules.user.entity.User;
 import org.SprintForge.modules.user.entity.UserPreference;
 import org.SprintForge.modules.user.exception.UserNotFoundException;
@@ -31,7 +31,7 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserPreferenceDto getUserPreferences(Long userId) {
+    public UserPreferenceResponse getUserPreferences(Long userId) {
         User user = getUserOrThrow(userId);
         UserPreference preference = userPreferenceRepository.findByUserId(userId)
                 .orElseGet(() -> createDefaultPreferencesEntity(user));
@@ -41,7 +41,7 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
 
     @Override
     @Transactional
-    public UserPreferenceDto updateUserPreferences(Long userId, UserPreferenceDto preferenceDto) {
+    public UserPreferenceResponse updateUserPreferences(Long userId, UserPreferenceResponse preferenceDto) {
         User user = getUserOrThrow(userId);
 
         UserPreference preference = userPreferenceRepository.findByUserId(userId)
@@ -77,7 +77,7 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
 
     @Override
     @Transactional
-    public UserPreferenceDto updateTheme(Long userId, String theme) {
+    public UserPreferenceResponse updateTheme(Long userId, String theme) {
         if (theme == null || theme.isBlank()) {
             throw new IllegalArgumentException("Theme value cannot be blank");
         }
@@ -95,7 +95,7 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
 
     @Override
     @Transactional
-    public UserPreferenceDto updateLanguage(Long userId, String language) {
+    public UserPreferenceResponse updateLanguage(Long userId, String language) {
         if (language == null || language.isBlank()) {
             throw new IllegalArgumentException("Language value cannot be blank");
         }
@@ -113,7 +113,7 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
 
     @Override
     @Transactional
-    public UserPreferenceDto updateTimezone(Long userId, String timezone) {
+    public UserPreferenceResponse updateTimezone(Long userId, String timezone) {
         if (timezone == null || timezone.isBlank()) {
             throw new IllegalArgumentException("Timezone value cannot be blank");
         }
@@ -131,7 +131,7 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
 
     @Override
     @Transactional
-    public UserPreferenceDto resetUserPreferencesToDefault(Long userId) {
+    public UserPreferenceResponse resetUserPreferencesToDefault(Long userId) {
         User user = getUserOrThrow(userId);
         UserPreference preference = getOrCreatePreference(user);
 
@@ -153,7 +153,7 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
 
     @Override
     @Transactional
-    public UserPreferenceDto getOrInitializePreferences(User user) {
+    public UserPreferenceResponse getOrInitializePreferences(User user) {
         UserPreference preference = getOrCreatePreference(user);
         return userMapper.toPreferenceDto(preference);
     }

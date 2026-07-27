@@ -1,5 +1,7 @@
 package org.SprintForge.modules.workspace.template.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
+
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.template.entity.WorkspaceAnnouncement;
 import org.SprintForge.modules.workspace.template.dto.request.AnnouncementCreateRequest;
@@ -7,7 +9,7 @@ import org.SprintForge.modules.workspace.template.dto.response.AnnouncementRespo
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface AnnouncementMapper {
 
     @Mapping(target = "id", ignore = true)

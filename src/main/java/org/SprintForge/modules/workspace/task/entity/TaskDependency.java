@@ -16,14 +16,15 @@ import org.SprintForge.modules.workspace.task.entity.enums.TaskDependencyType;
 @AllArgsConstructor
 public class TaskDependency extends SoftDeleteEntity {
 
-    @Column(name = "task_id", nullable = false)
-    private Long taskId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "predecessor_task_id", nullable = false)
+    private Task predecessorTask;
 
-    @Column(name = "depends_on_task_id", nullable = false)
-    private Long dependsOnTaskId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "successor_task_id", nullable = false)
+    private Task successorTask;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "dependency_type")
-    private TaskDependencyType dependencyType = TaskDependencyType.RELATES_TO;
+    private TaskDependencyType type;
 }
-

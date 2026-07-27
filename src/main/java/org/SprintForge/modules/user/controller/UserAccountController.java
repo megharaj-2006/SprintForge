@@ -1,5 +1,7 @@
 package org.SprintForge.modules.user.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,6 +19,7 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Tag(name = "User Account Controller", description = "APIs for account lifecycle, soft delete, restore, deactivation, statistics, and data export")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class UserAccountController {
 
     private final UserService userService;
@@ -33,8 +36,8 @@ public class UserAccountController {
     @Operation(summary = "Restore soft deleted account", description = "Resets is_deleted = false on user account.")
     @ApiResponse(responseCode = "200", description = "Account restored successfully")
     @PostMapping("/{id}/restore")
-    public ResponseEntity<UserProfileResponseDto> restoreDeletedAccount(@PathVariable("id") Long id) {
-        UserProfileResponseDto response = userService.restoreDeletedAccount(id);
+    public ResponseEntity<UserProfileResponse> restoreDeletedAccount(@PathVariable("id") Long id) {
+        UserProfileResponse response = userService.restoreDeletedAccount(id);
         return ResponseEntity.ok(response);
     }
 
@@ -50,38 +53,38 @@ public class UserAccountController {
     @Operation(summary = "Reactivate account by ID", description = "Resets is_suspended = false to reactivate account.")
     @ApiResponse(responseCode = "200", description = "Account reactivated successfully")
     @PostMapping("/{id}/reactivate")
-    public ResponseEntity<UserProfileResponseDto> reactivateAccount(@PathVariable("id") Long id) {
-        UserProfileResponseDto response = userService.reactivateAccount(id);
+    public ResponseEntity<UserProfileResponse> reactivateAccount(@PathVariable("id") Long id) {
+        UserProfileResponse response = userService.reactivateAccount(id);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Get user statistics", description = "Fetches metrics for user workspaces, projects, tasks, and comments.")
     @ApiResponse(responseCode = "200", description = "User statistics retrieved successfully")
     @GetMapping("/me/statistics")
-    public ResponseEntity<UserStatisticsDto> getUserStatistics(
+    public ResponseEntity<UserStatisticsResponse> getUserStatistics(
             @RequestHeader(value = "X-User-Id", defaultValue = "1") Long currentUserId) {
-        UserStatisticsDto statistics = userService.getUserStatistics(currentUserId);
+        UserStatisticsResponse statistics = userService.getUserStatistics(currentUserId);
         return ResponseEntity.ok(statistics);
     }
 
     @Operation(summary = "Get user activity feed", description = "Fetches recent activity logs for user.")
     @ApiResponse(responseCode = "200", description = "User activity feed retrieved successfully")
     @GetMapping("/me/activity")
-    public ResponseEntity<List<UserActivityDto>> getUserActivityFeed(
+    public ResponseEntity<List<UserActivityResponse>> getUserActivityFeed(
             @RequestHeader(value = "X-User-Id", defaultValue = "1") Long currentUserId,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        List<UserActivityDto> activities = userService.getUserActivityFeed(currentUserId, pageable);
+        List<UserActivityResponse> activities = userService.getUserActivityFeed(currentUserId, pageable);
         return ResponseEntity.ok(activities);
     }
 
     @Operation(summary = "Export user data", description = "Generates a full JSON payload export of user profile, preferences, statistics, and activities.")
     @ApiResponse(responseCode = "200", description = "User data exported successfully")
     @GetMapping("/me/export")
-    public ResponseEntity<UserDataExportDto> exportUserData(
+    public ResponseEntity<UserDataExportResponse> exportUserData(
             @RequestHeader(value = "X-User-Id", defaultValue = "1") Long currentUserId) {
-        UserDataExportDto exportData = userService.exportUserData(currentUserId);
+        UserDataExportResponse exportData = userService.exportUserData(currentUserId);
         return ResponseEntity.ok(exportData);
     }
 }
