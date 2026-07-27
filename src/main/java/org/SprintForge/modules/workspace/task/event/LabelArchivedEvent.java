@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 public record LabelArchivedEvent(
     Long labelId,
-    Long projectId,
     Long actorId,
     LocalDateTime timestamp
 ) {}

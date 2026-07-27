@@ -5,6 +5,8 @@ import org.SprintForge.modules.workspace.task.dto.request.AssignLabelRequest;
 import org.SprintForge.modules.workspace.task.dto.request.CreateTaskDependencyRequest;
 import org.SprintForge.modules.workspace.task.dto.request.CreateTaskRequest;
 import org.SprintForge.modules.workspace.task.dto.request.CreateSubtaskRequest;
+import org.SprintForge.modules.workspace.task.dto.request.CreateLabelRequest;
+import org.SprintForge.modules.workspace.task.dto.request.UpdateLabelRequest;
 import org.SprintForge.modules.workspace.task.dto.request.DuplicateTaskRequest;
 import org.SprintForge.modules.workspace.task.dto.request.RemoveLabelRequest;
 import org.SprintForge.modules.workspace.task.dto.request.UpdateTaskRequest;
@@ -16,7 +18,7 @@ import org.SprintForge.modules.workspace.task.service.management.TaskLifecycleSe
 import org.SprintForge.modules.workspace.task.service.management.TaskWorkflowService;
 import org.SprintForge.modules.workspace.task.service.query.TaskQueryService;
 import org.SprintForge.modules.workspace.task.service.member.TaskAssignmentService;
-import org.SprintForge.modules.workspace.task.service.label.TaskLabelService;
+import org.SprintForge.modules.workspace.task.service.TaskLabelService;
 import org.SprintForge.modules.workspace.task.service.relation.TaskDependencyService;
 import org.SprintForge.modules.workspace.task.service.relation.TaskHierarchyService;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskDependencyService taskDependencyService;
     private final TaskHierarchyService taskHierarchyService;
     private final TaskLabelService taskLabelService;
+    private final LabelManagementService labelManagementService;
 
     @Override
     public TaskResponse createTask(CreateTaskRequest request, Long actorId) {
@@ -159,42 +162,6 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public boolean isTaskAssigned(Long taskId) {
         return taskAssignmentService.isTaskAssigned(taskId);
-    }
-
-    // Label Operations
-    @Override
-    public void assignLabel(AssignLabelRequest request, Long actorId) {
-        taskLabelService.assignLabel(request, actorId);
-    }
-
-    @Override
-    public void assignLabels(Long taskId, List<Long> labelIds, Long actorId) {
-        taskLabelService.assignLabels(taskId, labelIds, actorId);
-    }
-
-    @Override
-    public void removeLabel(RemoveLabelRequest request, Long actorId) {
-        taskLabelService.removeLabel(request, actorId);
-    }
-
-    @Override
-    public void removeAllLabels(Long taskId, Long actorId) {
-        taskLabelService.removeAllLabels(taskId, actorId);
-    }
-
-    @Override
-    public List<TaskLabelResponse> getTaskLabels(Long taskId, Long actorId) {
-        return taskLabelService.getTaskLabels(taskId);
-    }
-
-    @Override
-    public List<Long> getTaskIdsByLabel(Long labelId, Long actorId) {
-        return taskLabelService.getTaskIdsByLabel(labelId);
-    }
-
-    @Override
-    public boolean hasLabel(Long taskId, Long labelId, Long actorId) {
-        return taskLabelService.hasLabel(taskId, labelId);
     }
 
     // Workflow Actions
@@ -358,5 +325,82 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public long countSubtasks(Long taskId) {
         return taskHierarchyService.countSubtasks(taskId);
+    }
+
+    // Label Management
+    @Override
+    public LabelResponse createLabel(Long projectId, CreateLabelRequest request, Long actorId) {
+        return labelManagementService.createLabel(projectId, request, actorId);
+    }
+
+    @Override
+    public LabelResponse updateLabel(Long labelId, UpdateLabelRequest request, Long actorId) {
+        return labelManagementService.updateLabel(labelId, request, actorId);
+    }
+
+    @Override
+    public LabelResponse archiveLabel(Long labelId, Long actorId) {
+        return labelManagementService.archiveLabel(labelId, actorId);
+    }
+
+    @Override
+    public LabelResponse restoreLabel(Long labelId, Long actorId) {
+        return labelManagementService.restoreLabel(labelId, actorId);
+    }
+
+    @Override
+    public void deleteLabel(Long labelId, Long actorId) {
+        labelManagementService.deleteLabel(labelId, actorId);
+    }
+
+    @Override
+    public List<LabelResponse> getLabels(Long projectId, Long actorId) {
+        return labelManagementService.getLabels(projectId, actorId);
+    }
+
+    @Override
+    public List<LabelResponse> searchLabels(Long projectId, String query, Long actorId) {
+        return labelManagementService.searchLabels(projectId, query, actorId);
+    }
+
+    // Task Label Assignment
+    @Override
+    public void assignLabel(Long taskId, Long labelId, Long actorId) {
+        taskLabelService.assignLabel(taskId, labelId, actorId);
+    }
+
+    @Override
+    public void assignLabels(Long taskId, List<Long> labelIds, Long actorId) {
+        taskLabelService.assignLabels(taskId, labelIds, actorId);
+    }
+
+    @Override
+    public void removeLabel(Long taskId, Long labelId, Long actorId) {
+        taskLabelService.removeLabel(taskId, labelId, actorId);
+    }
+
+    @Override
+    public void removeAllLabels(Long taskId, Long actorId) {
+        taskLabelService.removeAllLabels(taskId, actorId);
+    }
+
+    @Override
+    public List<LabelResponse> getTaskLabels(Long taskId, Long actorId) {
+        return taskLabelService.getTaskLabels(taskId, actorId);
+    }
+
+    @Override
+    public List<TaskResponse> getTasksByLabel(Long labelId, Long actorId) {
+        return taskLabelService.getTasksByLabel(labelId, actorId);
+    }
+
+    @Override
+    public boolean hasLabel(Long taskId, Long labelId) {
+        return taskLabelService.hasLabel(taskId, labelId);
+    }
+
+    @Override
+    public long countTasksUsingLabel(Long labelId) {
+        return taskLabelService.countTasksUsingLabel(labelId);
     }
 }

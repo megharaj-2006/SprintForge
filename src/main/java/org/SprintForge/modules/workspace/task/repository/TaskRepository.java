@@ -70,4 +70,7 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
     @Query("SELECT t FROM Task t WHERE t.project.id = :projectId AND t.isDeleted = false " +
            "AND NOT EXISTS (SELECT sub FROM Task sub WHERE sub.parentTask.id = t.id AND sub.isDeleted = false)")
     List<Task> findLeafTasks(@Param("projectId") Long projectId);
+
+    @Query("SELECT t FROM Task t JOIN t.labels l WHERE l.id = :labelId AND t.isDeleted = false AND l.isDeleted = false")
+    List<Task> findTasksByLabelId(@Param("labelId") Long labelId);
 }

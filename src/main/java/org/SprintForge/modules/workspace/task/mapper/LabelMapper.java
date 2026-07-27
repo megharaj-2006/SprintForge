@@ -1,76 +1,52 @@
 package org.SprintForge.modules.workspace.task.mapper;
 
+import org.mapstruct.*;
 import org.SprintForge.modules.workspace.task.dto.request.CreateLabelRequest;
 import org.SprintForge.modules.workspace.task.dto.request.UpdateLabelRequest;
 import org.SprintForge.modules.workspace.task.dto.response.LabelResponse;
 import org.SprintForge.modules.workspace.task.dto.response.LabelSummaryResponse;
-import org.SprintForge.modules.workspace.task.dto.response.TaskLabelResponse;
-import org.SprintForge.modules.workspace.task.entity.TaskLabel;
+import org.SprintForge.modules.workspace.task.entity.Label;
 
-import org.springframework.stereotype.Component;
+import java.util.List;
 
-@Component
-public class LabelMapper {
+@Mapper(componentModel = "spring")
+public interface LabelMapper {
 
-    public TaskLabel toEntity(CreateLabelRequest request) {
-        if (request == null) {
-            return null;
-        }
-        TaskLabel label = new TaskLabel();
-        label.setName(request.getName());
-        label.setDescription(request.getDescription());
-        label.setColor(request.getColor());
-        // project will be set in service
-        return label;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "project", ignore = true)
+    @Mapping(target = "archived", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "deletedAt", ignore = true)
+    @Mapping(target = "deletedBy", ignore = true)
+    @Mapping(target = "tasks", ignore = true)
+    @Mapping(target = "version", ignore = true)
+    Label toEntity(CreateLabelRequest dto);
 
-    public void updateEntityFromRequest(UpdateLabelRequest request, TaskLabel label) {
-        if (request == null || label == null) {
-            return;
-        }
-        label.setName(request.getName());
-        label.setDescription(request.getDescription());
-        label.setColor(request.getColor());
-        // id and project should not be changed via update
-    }
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "project", ignore = true)
+    @Mapping(target = "archived", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "deletedAt", ignore = true)
+    @Mapping(target = "deletedBy", ignore = true)
+    @Mapping(target = "tasks", ignore = true)
+    @Mapping(target = "version", ignore = true)
+    void updateEntity(UpdateLabelRequest dto, @MappingTarget Label entity);
 
-    public LabelResponse toLabelResponse(TaskLabel label) {
-        if (label == null) {
-            return null;
-        }
-        LabelResponse response = new LabelResponse();
-        response.setId(label.getId());
-        response.setProjectId(label.getProject().getId());
-        response.setName(label.getName());
-        response.setDescription(label.getDescription());
-        response.setColor(label.getColor());
-        response.setArchived(label.isArchived());
-        response.setCreatedBy(label.getCreatedBy());
-        response.setCreatedAt(label.getCreatedAt());
-        response.setUpdatedBy(label.getUpdatedBy());
-        response.setUpdatedAt(label.getUpdatedAt());
-        return response;
-    }
+    @Mapping(target = "projectId", source = "project.id")
+    LabelResponse toResponse(Label entity);
 
-    public LabelSummaryResponse toLabelSummaryResponse(TaskLabel label) {
-        if (label == null) {
-            return null;
-        }
-        return new LabelSummaryResponse(
-                label.getId(),
-                label.getName(),
-                label.getColor()
-        );
-    }
+    LabelSummaryResponse toSummaryResponse(Label entity);
 
-    public TaskLabelResponse toTaskLabelResponse(TaskLabel label) {
-        if (label == null) {
-            return null;
-        }
-        return new TaskLabelResponse(
-                label.getId(),
-                label.getName(),
-                label.getColor()
-        );
-    }
+    List<LabelResponse> toResponseList(List<Label> entities);
+
+    List<LabelSummaryResponse> toSummaryResponseList(List<Label> entities);
 }

@@ -20,10 +20,13 @@ import org.SprintForge.modules.workspace.sprint.entity.Sprint;
 import org.SprintForge.modules.workspace.sprint.entity.enums.SprintStatus;
 import org.SprintForge.modules.workspace.sprint.repository.SprintRepository;
 import org.SprintForge.modules.workspace.task.dto.request.CreateTaskDependencyRequest;
+import org.SprintForge.modules.workspace.task.dto.request.CreateLabelRequest;
 import org.SprintForge.modules.workspace.task.dto.request.CreateSubtaskRequest;
 import org.SprintForge.modules.workspace.task.dto.request.CreateTaskRequest;
 import org.SprintForge.modules.workspace.task.dto.request.DuplicateTaskRequest;
+import org.SprintForge.modules.workspace.task.dto.request.UpdateLabelRequest;
 import org.SprintForge.modules.workspace.task.dto.request.UpdateTaskRequest;
+import org.SprintForge.modules.workspace.task.dto.response.LabelResponse;
 import org.SprintForge.modules.workspace.task.dto.response.SubtaskResponse;
 import org.SprintForge.modules.workspace.task.dto.response.TaskAssignmentResponse;
 import org.SprintForge.modules.workspace.task.dto.response.TaskAssigneeResponse;
@@ -39,11 +42,16 @@ import org.SprintForge.modules.workspace.task.entity.enums.TaskStatus;
 import org.SprintForge.modules.workspace.task.entity.enums.TaskType;
 import org.SprintForge.modules.workspace.task.event.*;
 import org.SprintForge.modules.workspace.task.mapper.TaskAssignmentMapper;
+import org.SprintForge.modules.workspace.task.entity.Label;
+import org.SprintForge.modules.workspace.task.mapper.LabelMapper;
 import org.SprintForge.modules.workspace.task.mapper.TaskDependencyMapper;
 import org.SprintForge.modules.workspace.task.mapper.TaskMapper;
+import org.SprintForge.modules.workspace.task.repository.LabelRepository;
 import org.SprintForge.modules.workspace.task.repository.TaskAssignmentRepository;
 import org.SprintForge.modules.workspace.task.repository.TaskDependencyRepository;
 import org.SprintForge.modules.workspace.task.repository.TaskRepository;
+import org.SprintForge.modules.workspace.task.service.LabelManagementServiceImpl;
+import org.SprintForge.modules.workspace.task.service.TaskLabelServiceImpl;
 import org.SprintForge.modules.workspace.task.service.management.TaskLifecycleServiceImpl;
 import org.SprintForge.modules.workspace.task.service.management.TaskWorkflowServiceImpl;
 import org.SprintForge.modules.workspace.task.service.query.TaskQueryServiceImpl;
@@ -118,12 +126,20 @@ class TaskServiceTest {
     @Mock
     private TaskDependencyMapper taskDependencyMapper;
 
+    @Mock
+    private LabelRepository labelRepository;
+
+    @Mock
+    private LabelMapper labelMapper;
+
     private TaskLifecycleServiceImpl taskLifecycleService;
     private TaskQueryServiceImpl taskQueryService;
     private TaskWorkflowServiceImpl taskWorkflowService;
     private TaskAssignmentServiceImpl taskAssignmentService;
     private TaskDependencyServiceImpl taskDependencyService;
     private TaskHierarchyServiceImpl taskHierarchyService;
+    private LabelManagementServiceImpl labelManagementService;
+    private TaskLabelServiceImpl taskLabelService;
 
     private Project project;
     private Sprint sprint;
@@ -183,6 +199,24 @@ class TaskServiceTest {
         taskHierarchyService = new TaskHierarchyServiceImpl(
                 taskRepository,
                 projectPermissionService,
+                taskMapper,
+                eventPublisher
+        );
+
+        labelManagementService = new LabelManagementServiceImpl(
+                labelRepository,
+                projectRepository,
+                taskRepository,
+                projectPermissionService,
+                labelMapper,
+                eventPublisher
+        );
+
+        taskLabelService = new TaskLabelServiceImpl(
+                taskRepository,
+                labelRepository,
+                projectPermissionService,
+                labelMapper,
                 taskMapper,
                 eventPublisher
         );
@@ -656,5 +690,96 @@ class TaskServiceTest {
         when(taskRepository.findByParentTaskIdAndIsDeletedFalse(3L)).thenReturn(List.of(child));
 
         assertThrows(BusinessRuleException.class, () -> taskWorkflowService.completeTask(3L, 100L));
+    }
+
+    @Test
+    void createLabel_shouldSucceed() {
+        CreateLabelRequest request = CreateLabelRequest.builder()
+                .name("Bug")
+                .color("#FF0000")
+                .description("Defects found")
+                .build();
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(projectPermissionService.hasPermission(1L, 100L, "MANAGE_LABELS")).thenReturn(true);
+        when(labelRepository.existsByProjectIdAndNameAndIsDeletedFalse(1L, "Bug")).thenReturn(false);
+
+        Label label = new Label();
+        label.setId(10L);
+        label.setProject(project);
+        label.setName("Bug");
+        label.setColor("#FF0000");
+        label.setDescription("Defects found");
+
+        when(labelMapper.toEntity(request)).thenReturn(label);
+        when(labelRepository.save(any(Label.class))).thenReturn(label);
+        when(labelMapper.toResponse(any(Label.class))).thenReturn(
+                LabelResponse.builder()
+                        .id(10L)
+                        .projectId(1L)
+                        .name("Bug")
+                        .color("#FF0000")
+                        .description("Defects found")
+                        .build()
+        );
+
+        LabelResponse response = labelManagementService.createLabel(1L, request, 100L);
+
+        assertNotNull(response);
+        assertEquals(10L, response.getId());
+        assertEquals("Bug", response.getName());
+        verify(eventPublisher, times(1)).publishEvent(any(LabelCreatedEvent.class));
+    }
+
+    @Test
+    void assignLabel_shouldSucceed() {
+        Label label = new Label();
+        label.setId(10L);
+        label.setProject(project);
+        label.setName("Bug");
+        label.setColor("#FF0000");
+
+        when(taskRepository.findById(3L)).thenReturn(Optional.of(task));
+        when(labelRepository.findById(10L)).thenReturn(Optional.of(label));
+        when(projectPermissionService.hasPermission(1L, 100L, "UPDATE_TASK")).thenReturn(true);
+
+        taskLabelService.assignLabel(3L, 10L, 100L);
+
+        assertTrue(task.getLabels().contains(label));
+        verify(eventPublisher, times(1)).publishEvent(any(LabelAssignedEvent.class));
+    }
+
+    @Test
+    void assignLabel_archivedLabel_shouldThrowBusinessRuleException() {
+        Label label = new Label();
+        label.setId(10L);
+        label.setProject(project);
+        label.setName("Bug");
+        label.setArchived(true);
+
+        when(taskRepository.findById(3L)).thenReturn(Optional.of(task));
+        when(labelRepository.findById(10L)).thenReturn(Optional.of(label));
+        when(projectPermissionService.hasPermission(1L, 100L, "UPDATE_TASK")).thenReturn(true);
+
+        assertThrows(BusinessRuleException.class, () -> taskLabelService.assignLabel(3L, 10L, 100L));
+    }
+
+    @Test
+    void removeLabel_shouldSucceed() {
+        Label label = new Label();
+        label.setId(10L);
+        label.setProject(project);
+        label.setName("Bug");
+
+        task.getLabels().add(label);
+
+        when(taskRepository.findById(3L)).thenReturn(Optional.of(task));
+        when(labelRepository.findById(10L)).thenReturn(Optional.of(label));
+        when(projectPermissionService.hasPermission(1L, 100L, "UPDATE_TASK")).thenReturn(true);
+
+        taskLabelService.removeLabel(3L, 10L, 100L);
+
+        assertFalse(task.getLabels().contains(label));
+        verify(eventPublisher, times(1)).publishEvent(any(LabelRemovedEvent.class));
     }
 }

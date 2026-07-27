@@ -1,27 +1,24 @@
 package org.SprintForge.modules.workspace.task.dto.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateLabelRequest {
 
-    @NotNull
-    private Long id;
-
-    @Size(max = 100)
+    @Size(min = 2, max = 50, message = "Label name must be between 2 and 50 characters")
     private String name;
 
-    @Size(max = 500)
-    private String description;
-
-    @Size(max = 20)
+    @Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message = "Label color must be a valid hex color code (e.g. #FF5733)")
     private String color;
+
+    @Size(max = 255, message = "Description must not exceed 255 characters")
+    private String description;
 }

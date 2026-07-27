@@ -9,6 +9,8 @@ import org.SprintForge.modules.workspace.task.dto.request.RemoveLabelRequest;
 import org.SprintForge.modules.workspace.task.dto.request.UpdateTaskRequest;
 import org.SprintForge.modules.workspace.task.dto.response.TaskAssignmentResponse;
 import org.SprintForge.modules.workspace.task.dto.response.TaskAssigneeResponse;
+import org.SprintForge.modules.workspace.task.dto.request.CreateLabelRequest;
+import org.SprintForge.modules.workspace.task.dto.request.UpdateLabelRequest;
 import org.SprintForge.modules.workspace.task.dto.response.TaskDependencyResponse;
 import org.SprintForge.modules.workspace.task.dto.response.TaskHierarchyResponse;
 import org.SprintForge.modules.workspace.task.dto.response.LabelResponse;
@@ -84,21 +86,6 @@ public interface TaskService {
 
     boolean isTaskAssigned(Long taskId);
 
-    // Label Operations
-    void assignLabel(AssignLabelRequest request, Long actorId);
-
-    void assignLabels(Long taskId, List<Long> labelIds, Long actorId);
-
-    void removeLabel(RemoveLabelRequest request, Long actorId);
-
-    void removeAllLabels(Long taskId, Long actorId);
-
-    List<TaskLabelResponse> getTaskLabels(Long taskId, Long actorId);
-
-    List<Long> getTaskIdsByLabel(Long labelId, Long actorId);
-
-    boolean hasLabel(Long taskId, Long labelId, Long actorId);
-
     // Workflow Actions
     boolean validateTransition(TaskStatus current, TaskStatus target);
 
@@ -159,4 +146,36 @@ public interface TaskService {
     boolean hasChildren(Long taskId);
 
     long countSubtasks(Long taskId);
+
+    // Label Management
+    LabelResponse createLabel(Long projectId, CreateLabelRequest request, Long actorId);
+
+    LabelResponse updateLabel(Long labelId, UpdateLabelRequest request, Long actorId);
+
+    LabelResponse archiveLabel(Long labelId, Long actorId);
+
+    LabelResponse restoreLabel(Long labelId, Long actorId);
+
+    void deleteLabel(Long labelId, Long actorId);
+
+    List<LabelResponse> getLabels(Long projectId, Long actorId);
+
+    List<LabelResponse> searchLabels(Long projectId, String query, Long actorId);
+
+    // Task Label Assignment
+    void assignLabel(Long taskId, Long labelId, Long actorId);
+
+    void assignLabels(Long taskId, List<Long> labelIds, Long actorId);
+
+    void removeLabel(Long taskId, Long labelId, Long actorId);
+
+    void removeAllLabels(Long taskId, Long actorId);
+
+    List<LabelResponse> getTaskLabels(Long taskId, Long actorId);
+
+    List<TaskResponse> getTasksByLabel(Long labelId, Long actorId);
+
+    boolean hasLabel(Long taskId, Long labelId);
+
+    long countTasksUsingLabel(Long labelId);
 }

@@ -81,4 +81,12 @@ public class Task extends SoftDeleteEntity {
 
     @OneToMany(mappedBy = "parentTask", cascade = CascadeType.ALL, orphanRemoval = true)
     private java.util.List<Task> subtasks = new java.util.ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "task_labels_mapping",
+        joinColumns = @JoinColumn(name = "task_id"),
+        inverseJoinColumns = @JoinColumn(name = "label_id")
+    )
+    private java.util.Set<Label> labels = new java.util.HashSet<>();
 }

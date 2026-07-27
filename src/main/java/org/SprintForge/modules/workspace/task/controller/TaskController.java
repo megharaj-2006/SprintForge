@@ -19,6 +19,9 @@ import org.SprintForge.modules.workspace.task.dto.request.CreateSubtaskRequest;
 import org.SprintForge.modules.workspace.task.dto.request.MoveSubtaskRequest;
 import org.SprintForge.modules.workspace.task.dto.response.AllowedTransitionsResponse;
 import org.SprintForge.modules.workspace.task.dto.response.TaskDependencyResponse;
+import org.SprintForge.modules.workspace.task.dto.request.CreateLabelRequest;
+import org.SprintForge.modules.workspace.task.dto.request.UpdateLabelRequest;
+import org.SprintForge.modules.workspace.task.dto.response.LabelResponse;
 import org.SprintForge.modules.workspace.task.dto.response.SubtaskResponse;
 import org.SprintForge.modules.workspace.task.dto.response.TaskHierarchyResponse;
 import org.SprintForge.modules.workspace.task.entity.enums.TaskStatus;
@@ -324,5 +327,79 @@ public class TaskController {
             @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
         taskService.removeParent(taskId, actorId);
         return ResponseEntity.noContent().build();
+    }
+
+    // Label Management
+    @Operation(summary = "Create a project label")
+    @PostMapping("/projects/{projectId}/labels")
+    public ResponseEntity<LabelResponse> createLabel(
+            @PathVariable Long projectId,
+            @Valid @RequestBody CreateLabelRequest request,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        LabelResponse response = taskService.createLabel(projectId, request, actorId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(summary = "Get all labels of a project")
+    @GetMapping("/projects/{projectId}/labels")
+    public ResponseEntity<List<LabelResponse>> getLabels(
+            @PathVariable Long projectId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.ok(taskService.getLabels(projectId, actorId));
+    }
+
+    @Operation(summary = "Update a label")
+    @PatchMapping("/labels/{labelId}")
+    public ResponseEntity<LabelResponse> updateLabel(
+            @PathVariable Long labelId,
+            @Valid @RequestBody UpdateLabelRequest request,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.ok(taskService.updateLabel(labelId, request, actorId));
+    }
+
+    @Operation(summary = "Delete a label")
+    @DeleteMapping("/labels/{labelId}")
+    public ResponseEntity<Void> deleteLabel(
+            @PathVariable Long labelId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        taskService.deleteLabel(labelId, actorId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Task Label Assignment
+    @Operation(summary = "Assign a label to a task")
+    @PostMapping("/tasks/{taskId}/labels/{labelId}")
+    public ResponseEntity<Void> assignLabel(
+            @PathVariable Long taskId,
+            @PathVariable Long labelId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        taskService.assignLabel(taskId, labelId, actorId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Remove a label from a task")
+    @DeleteMapping("/tasks/{taskId}/labels/{labelId}")
+    public ResponseEntity<Void> removeLabel(
+            @PathVariable Long taskId,
+            @PathVariable Long labelId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        taskService.removeLabel(taskId, labelId, actorId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Get labels assigned to a task")
+    @GetMapping("/tasks/{taskId}/labels")
+    public ResponseEntity<List<LabelResponse>> getTaskLabels(
+            @PathVariable Long taskId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.ok(taskService.getTaskLabels(taskId, actorId));
+    }
+
+    @Operation(summary = "Get tasks containing a label")
+    @GetMapping("/labels/{labelId}/tasks")
+    public ResponseEntity<List<TaskResponse>> getTasksByLabel(
+            @PathVariable Long labelId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.ok(taskService.getTasksByLabel(labelId, actorId));
     }
 }

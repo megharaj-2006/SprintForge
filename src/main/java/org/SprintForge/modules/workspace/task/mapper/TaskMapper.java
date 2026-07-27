@@ -35,6 +35,7 @@ public interface TaskMapper {
     @Mapping(target = "successorDependencies", ignore = true)
     @Mapping(target = "predecessorDependencies", ignore = true)
     @Mapping(target = "subtasks", ignore = true)
+    @Mapping(target = "labels", ignore = true)
     Task toEntity(CreateTaskRequest dto);
 
     @Mapping(target = "id", ignore = true)
@@ -56,6 +57,7 @@ public interface TaskMapper {
     @Mapping(target = "successorDependencies", ignore = true)
     @Mapping(target = "predecessorDependencies", ignore = true)
     @Mapping(target = "subtasks", ignore = true)
+    @Mapping(target = "labels", ignore = true)
     Task toEntity(CreateSubtaskRequest dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -77,6 +79,7 @@ public interface TaskMapper {
     @Mapping(target = "successorDependencies", ignore = true)
     @Mapping(target = "predecessorDependencies", ignore = true)
     @Mapping(target = "subtasks", ignore = true)
+    @Mapping(target = "labels", ignore = true)
     void updateEntity(UpdateTaskRequest dto, @MappingTarget Task entity);
 
     @Mapping(target = "projectId", source = "project.id")

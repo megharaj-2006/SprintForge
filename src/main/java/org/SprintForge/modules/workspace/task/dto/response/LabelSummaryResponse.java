@@ -1,18 +1,16 @@
 package org.SprintForge.modules.workspace.task.dto.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class LabelSummaryResponse {
-
     private Long id;
     private String name;
     private String color;
-
 }
