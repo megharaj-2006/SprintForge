@@ -1,11 +1,9 @@
 package org.SprintForge.modules.workspace.task.service;
 
-import org.SprintForge.modules.workspace.task.dto.request.AssignLabelRequest;
 import org.SprintForge.modules.workspace.task.dto.request.CreateTaskDependencyRequest;
 import org.SprintForge.modules.workspace.task.dto.request.CreateTaskRequest;
 import org.SprintForge.modules.workspace.task.dto.request.CreateSubtaskRequest;
 import org.SprintForge.modules.workspace.task.dto.request.DuplicateTaskRequest;
-import org.SprintForge.modules.workspace.task.dto.request.RemoveLabelRequest;
 import org.SprintForge.modules.workspace.task.dto.request.UpdateTaskRequest;
 import org.SprintForge.modules.workspace.task.dto.response.TaskAssignmentResponse;
 import org.SprintForge.modules.workspace.task.dto.response.TaskAssigneeResponse;
@@ -14,7 +12,6 @@ import org.SprintForge.modules.workspace.task.dto.request.UpdateLabelRequest;
 import org.SprintForge.modules.workspace.task.dto.response.TaskDependencyResponse;
 import org.SprintForge.modules.workspace.task.dto.response.TaskHierarchyResponse;
 import org.SprintForge.modules.workspace.task.dto.response.LabelResponse;
-import org.SprintForge.modules.workspace.task.dto.response.TaskLabelResponse;
 import org.SprintForge.modules.workspace.task.dto.response.TaskStatisticsResponse;
 import org.SprintForge.modules.workspace.task.dto.response.TaskResponse;
 import org.SprintForge.modules.workspace.task.dto.response.SubtaskResponse;

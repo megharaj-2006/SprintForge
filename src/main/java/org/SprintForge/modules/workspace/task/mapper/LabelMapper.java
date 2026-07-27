@@ -1,5 +1,6 @@
 package org.SprintForge.modules.workspace.task.mapper;
 
+import org.SprintForge.common.config.GlobalMapperConfig;
 import org.mapstruct.*;
 import org.SprintForge.modules.workspace.task.dto.request.CreateLabelRequest;
 import org.SprintForge.modules.workspace.task.dto.request.UpdateLabelRequest;
@@ -9,7 +10,7 @@ import org.SprintForge.modules.workspace.task.entity.Label;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = GlobalMapperConfig.class)
 public interface LabelMapper {
 
     @Mapping(target = "id", ignore = true)
