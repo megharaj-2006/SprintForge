@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.SprintForge.common.entity.SoftDeleteEntity;
 import org.SprintForge.modules.workspace.customfield.entity.enums.CustomFieldType;
+import org.SprintForge.modules.workspace.project.entity.Project;
 
 @Entity
 @Table(name = "custom_fields")
@@ -16,8 +17,9 @@ import org.SprintForge.modules.workspace.customfield.entity.enums.CustomFieldTyp
 @AllArgsConstructor
 public class CustomField extends SoftDeleteEntity {
 
-    @Column(name = "workspace_id", nullable = false)
-    private Long workspaceId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -26,8 +28,8 @@ public class CustomField extends SoftDeleteEntity {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    private CustomFieldType type = CustomFieldType.TEXT;
+    @Column(name = "field_type", nullable = false)
+    private CustomFieldType fieldType = CustomFieldType.TEXT;
 
     @Column(name = "options", columnDefinition = "TEXT")
     private String options;
@@ -38,7 +40,13 @@ public class CustomField extends SoftDeleteEntity {
     @Column(name = "default_value")
     private String defaultValue;
 
-    @Column(name = "created_by_user_id")
-    private Long createdByUserId;
+    @Column(name = "position")
+    private Integer position = 0;
+
+    @Column(name = "archived")
+    private Boolean archived = false;
+
+    @Column(name = "validation_rules", columnDefinition = "TEXT")
+    private String validationRules;
 }
 

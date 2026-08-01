@@ -4,6 +4,8 @@
 -- ============================================================================
 
 -- Drop tables if they exist (Clean execution)
+DROP TABLE IF EXISTS custom_field_values CASCADE;
+DROP TABLE IF EXISTS custom_fields CASCADE;
 DROP TABLE IF EXISTS admin_action_logs CASCADE;
 DROP TABLE IF EXISTS system_configurations CASCADE;
 DROP TABLE IF EXISTS project_statisticss CASCADE;
@@ -462,10 +464,12 @@ CREATE TABLE task_tags (
 CREATE TABLE task_histories (
     id BIGSERIAL PRIMARY KEY,
     task_id BIGINT NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
-    user_id BIGINT NOT NULL REFERENCES users(id),
-    field_name VARCHAR(100) NOT NULL,
+    user_id BIGINT REFERENCES users(id),
+    action_type VARCHAR(50) NOT NULL,
+    field_name VARCHAR(100),
     old_value TEXT,
     new_value TEXT,
+    description TEXT,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITHOUT TIME ZONE,
     created_by VARCHAR(255),
@@ -755,6 +759,42 @@ CREATE TABLE admin_action_logs (
     version BIGINT DEFAULT 0
 );
 
+-- 45. Custom Fields
+CREATE TABLE custom_fields (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    field_type VARCHAR(50) NOT NULL,
+    required BOOLEAN NOT NULL DEFAULT FALSE,
+    default_value TEXT,
+    position INTEGER DEFAULT 0,
+    archived BOOLEAN NOT NULL DEFAULT FALSE,
+    validation_rules TEXT,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
+    created_by VARCHAR(255),
+    updated_by VARCHAR(255),
+    is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    version BIGINT DEFAULT 0,
+    CONSTRAINT uq_project_field_name UNIQUE (project_id, name)
+);
+
+-- 46. Custom Field Values
+CREATE TABLE custom_field_values (
+    id BIGSERIAL PRIMARY KEY,
+    task_id BIGINT NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+    custom_field_id BIGINT NOT NULL REFERENCES custom_fields(id) ON DELETE CASCADE,
+    field_value TEXT,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
+    created_by VARCHAR(255),
+    updated_by VARCHAR(255),
+    is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    version BIGINT DEFAULT 0,
+    CONSTRAINT uq_task_field UNIQUE (task_id, custom_field_id)
+);
+
 -- ============================================================================
 -- Indexes for Performance Optimization
 -- ============================================================================
@@ -771,3 +811,5 @@ CREATE INDEX idx_comment_task ON comments(task_id);
 CREATE INDEX idx_notification_recipient ON notifications(recipient_id);
 CREATE INDEX idx_activity_user ON activity_logs(user_id);
 CREATE INDEX idx_audit_record ON audit_logs(table_name, record_id);
+CREATE INDEX idx_custom_field_project ON custom_fields(project_id);
+CREATE INDEX idx_custom_field_value_task ON custom_field_values(task_id);

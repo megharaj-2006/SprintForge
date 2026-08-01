@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.SprintForge.common.entity.SoftDeleteEntity;
-
-import java.time.LocalDateTime;
+import org.SprintForge.modules.user.entity.User;
+import org.SprintForge.modules.workspace.task.entity.enums.TaskHistoryActionType;
 
 @Entity
 @Table(name = "task_histories")
@@ -17,11 +17,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TaskHistory extends SoftDeleteEntity {
 
-    @Column(name = "task_id", nullable = false)
-    private Long taskId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", nullable = false)
+    private Task task;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User performedBy;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "action_type", nullable = false)
+    private TaskHistoryActionType actionType;
 
     @Column(name = "field_name")
     private String fieldName;
@@ -32,6 +38,6 @@ public class TaskHistory extends SoftDeleteEntity {
     @Column(name = "new_value", columnDefinition = "TEXT")
     private String newValue;
 
-    @Column(name = "changed_at")
-    private LocalDateTime changedAt;
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
 }

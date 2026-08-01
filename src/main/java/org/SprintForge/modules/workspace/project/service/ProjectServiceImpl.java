@@ -6,6 +6,7 @@ import org.SprintForge.modules.workspace.project.dto.response.*;
 import org.SprintForge.modules.workspace.project.entity.enums.ProjectVisibility;
 import org.SprintForge.modules.workspace.project.service.management.ProjectLifecycleService;
 import org.SprintForge.modules.workspace.project.service.member.ProjectMemberService;
+import org.SprintForge.modules.workspace.project.service.milestone.MilestoneService;
 import org.SprintForge.modules.workspace.project.service.query.ProjectQueryService;
 import org.SprintForge.modules.workspace.project.service.settings.ProjectSettingsService;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectQueryService projectQueryService;
     private final ProjectSettingsService projectSettingsService;
     private final ProjectMemberService projectMemberService;
+    private final MilestoneService milestoneService;
 
     // Lifecycle
     @Override
@@ -128,5 +130,56 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void leaveProject(Long projectId, Long actorId) {
         projectMemberService.leaveProject(projectId, actorId);
+    }
+
+    // Milestones
+    @Override
+    public MilestoneResponse createMilestone(Long projectId, MilestoneCreateRequest request, Long actorId) {
+        return milestoneService.createMilestone(projectId, request, actorId);
+    }
+
+    @Override
+    public MilestoneResponse updateMilestone(Long milestoneId, MilestoneUpdateRequest request, Long actorId) {
+        return milestoneService.updateMilestone(milestoneId, request, actorId);
+    }
+
+    @Override
+    public MilestoneResponse archiveMilestone(Long milestoneId, Long actorId) {
+        return milestoneService.archiveMilestone(milestoneId, actorId);
+    }
+
+    @Override
+    public void deleteMilestone(Long milestoneId, Long actorId) {
+        milestoneService.deleteMilestone(milestoneId, actorId);
+    }
+
+    @Override
+    public MilestoneResponse completeMilestone(Long milestoneId, Long actorId) {
+        return milestoneService.completeMilestone(milestoneId, actorId);
+    }
+
+    @Override
+    public MilestoneResponse assignTask(Long milestoneId, Long taskId, Long actorId) {
+        return milestoneService.assignTask(milestoneId, taskId, actorId);
+    }
+
+    @Override
+    public MilestoneResponse removeTask(Long milestoneId, Long taskId, Long actorId) {
+        return milestoneService.removeTask(milestoneId, taskId, actorId);
+    }
+
+    @Override
+    public List<MilestoneResponse> getProjectMilestones(Long projectId, Long actorId) {
+        return milestoneService.getProjectMilestones(projectId, actorId);
+    }
+
+    @Override
+    public List<MilestoneResponse> getOverdueMilestones(Long projectId, Long actorId) {
+        return milestoneService.getOverdueMilestones(projectId, actorId);
+    }
+
+    @Override
+    public MilestoneProgressResponse calculateProgress(Long milestoneId, Long actorId) {
+        return milestoneService.calculateProgress(milestoneId, actorId);
     }
 }

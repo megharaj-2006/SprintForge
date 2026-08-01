@@ -18,7 +18,10 @@ public class SavedView extends SoftDeleteEntity {
     @Column(name = "workspace_id", nullable = false)
     private Long workspaceId;
 
-    @Column(name = "user_id")
+    @Column(name = "project_id")
+    private Long projectId;
+
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
     @Column(name = "name", nullable = false)
@@ -28,7 +31,7 @@ public class SavedView extends SoftDeleteEntity {
     private String description;
 
     @Column(name = "view_type")
-    private String viewType;
+    private String viewType; // BOARD, LIST, KANBAN, GANTT, CALENDAR
 
     @Column(name = "filters", columnDefinition = "TEXT")
     private String filters;
@@ -39,10 +42,21 @@ public class SavedView extends SoftDeleteEntity {
     @Column(name = "grouping", columnDefinition = "TEXT")
     private String grouping;
 
+    @Column(name = "columns", columnDefinition = "TEXT")
+    private String columns;
+
     @Column(name = "layout")
     private String layout;
 
+    @Column(name = "visibility")
+    private String visibility = "PRIVATE"; // PRIVATE, WORKSPACE, PROJECT
+
     @Column(name = "is_default")
     private Boolean isDefault = false;
-}
 
+    @Column(name = "is_shared")
+    private Boolean isShared = false;
+
+    @Column(name = "is_favorite")
+    private Boolean isFavorite = false;
+}

@@ -13,18 +13,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CalendarEventResponse {
 
-    private Long id;
-    private Long workspaceId;
-    private Long projectId;
-    private Long taskId;
+    private String id;
     private String title;
-    private String description;
-    private String location;
+    private String eventType; // TASK_DUE, SPRINT_END, MILESTONE_DUE
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private Boolean allDay;
-    private String recurrenceRule;
-    private Long createdByUserId;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String status;
+    private String color;
+    private String entityUrl;
 }

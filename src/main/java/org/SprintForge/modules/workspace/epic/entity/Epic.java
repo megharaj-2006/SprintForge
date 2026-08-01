@@ -21,6 +21,9 @@ public class Epic extends SoftDeleteEntity {
     @Column(name = "project_id", nullable = false)
     private Long projectId;
 
+    @Column(name = "parent_epic_id")
+    private Long parentEpicId;
+
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -31,7 +34,7 @@ public class Epic extends SoftDeleteEntity {
     private String color;
 
     @Column(name = "status")
-    private String status;
+    private String status = "PLANNED"; // PLANNED, IN_PROGRESS, COMPLETED, ARCHIVED
 
     @Column(name = "owner_id")
     private Long ownerId;
@@ -53,5 +56,7 @@ public class Epic extends SoftDeleteEntity {
 
     @Column(name = "completed_story_points")
     private Integer completedStoryPoints = 0;
-}
 
+    @Column(name = "is_archived")
+    private Boolean isArchived = false;
+}

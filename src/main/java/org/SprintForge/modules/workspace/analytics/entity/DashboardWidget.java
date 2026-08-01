@@ -19,7 +19,7 @@ public class DashboardWidget extends SoftDeleteEntity {
     private Long dashboardId;
 
     @Column(name = "widget_type", nullable = false)
-    private String widgetType;
+    private String widgetType; // MY_TASKS, OVERDUE_TASKS, SPRINT_PROGRESS, BURNDOWN, TASK_STATUS, WORKLOAD, CALENDAR, RECENT_ACTIVITY
 
     @Column(name = "title")
     private String title;
@@ -28,12 +28,14 @@ public class DashboardWidget extends SoftDeleteEntity {
     private String configuration;
 
     @Column(name = "position")
-    private Integer position;
+    private Integer position = 0;
 
     @Column(name = "width")
-    private Integer width;
+    private Integer width = 12;
 
     @Column(name = "height")
-    private Integer height;
-}
+    private Integer height = 6;
 
+    @Column(name = "refresh_interval")
+    private Integer refreshInterval = 300; // In seconds
+}

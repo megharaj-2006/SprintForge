@@ -15,14 +15,17 @@ import java.time.LocalDateTime;
 public class CustomFieldResponse {
 
     private Long id;
-    private Long workspaceId;
+    private Long projectId;
     private String name;
     private String description;
-    private CustomFieldType type;
+    private CustomFieldType fieldType;
     private String options;
     private Boolean required;
     private String defaultValue;
-    private Long createdByUserId;
+    private Integer position;
+    private Boolean archived;
+    private String validationRules;
+    private String createdBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

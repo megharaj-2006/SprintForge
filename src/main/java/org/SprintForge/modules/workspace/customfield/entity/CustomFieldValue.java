@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.SprintForge.common.entity.SoftDeleteEntity;
+import org.SprintForge.modules.workspace.task.entity.Task;
 
 @Entity
 @Table(name = "custom_field_values")
@@ -15,11 +16,13 @@ import org.SprintForge.common.entity.SoftDeleteEntity;
 @AllArgsConstructor
 public class CustomFieldValue extends SoftDeleteEntity {
 
-    @Column(name = "custom_field_id", nullable = false)
-    private Long customFieldId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "custom_field_id", nullable = false)
+    private CustomField customField;
 
-    @Column(name = "task_id", nullable = false)
-    private Long taskId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", nullable = false)
+    private Task task;
 
     @Column(name = "field_value", columnDefinition = "TEXT")
     private String value;

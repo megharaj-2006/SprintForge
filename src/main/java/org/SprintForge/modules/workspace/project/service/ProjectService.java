@@ -36,4 +36,16 @@ public interface ProjectService {
     void removeMember(Long projectId, Long memberId, Long actorId);
     ProjectMemberResponse changeRole(Long projectId, Long memberId, UpdateProjectMemberRoleRequest request, Long actorId);
     void leaveProject(Long projectId, Long actorId);
+
+    // Milestones
+    MilestoneResponse createMilestone(Long projectId, MilestoneCreateRequest request, Long actorId);
+    MilestoneResponse updateMilestone(Long milestoneId, MilestoneUpdateRequest request, Long actorId);
+    MilestoneResponse archiveMilestone(Long milestoneId, Long actorId);
+    void deleteMilestone(Long milestoneId, Long actorId);
+    MilestoneResponse completeMilestone(Long milestoneId, Long actorId);
+    MilestoneResponse assignTask(Long milestoneId, Long taskId, Long actorId);
+    MilestoneResponse removeTask(Long milestoneId, Long taskId, Long actorId);
+    List<MilestoneResponse> getProjectMilestones(Long projectId, Long actorId);
+    List<MilestoneResponse> getOverdueMilestones(Long projectId, Long actorId);
+    MilestoneProgressResponse calculateProgress(Long milestoneId, Long actorId);
 }

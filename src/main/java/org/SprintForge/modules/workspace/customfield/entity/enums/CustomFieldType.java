@@ -5,6 +5,7 @@ public enum CustomFieldType {
     TEXTAREA,
     NUMBER,
     DATE,
+    DATETIME,
     BOOLEAN,
     EMAIL,
     URL,

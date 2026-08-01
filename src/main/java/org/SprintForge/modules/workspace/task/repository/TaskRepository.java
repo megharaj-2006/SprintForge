@@ -73,4 +73,6 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
 
     @Query("SELECT t FROM Task t JOIN t.labels l WHERE l.id = :labelId AND t.isDeleted = false AND l.isDeleted = false")
     List<Task> findTasksByLabelId(@Param("labelId") Long labelId);
+
+    List<Task> findByMilestoneIdAndIsDeletedFalse(Long milestoneId);
 }

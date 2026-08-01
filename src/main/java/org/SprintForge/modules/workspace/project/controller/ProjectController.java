@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Milestone DTOs — resolved via wildcard imports above (dto.request.* / dto.response.*)
+
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -225,4 +227,102 @@ public class ProjectController {
         projectService.leaveProject(projectId, actorId);
         return ResponseEntity.noContent().build();
     }
-}
+
+    // -------------------------------------------------------------------------
+    // Milestone Endpoints
+    // -------------------------------------------------------------------------
+
+    @Operation(summary = "Create a milestone in a project")
+    @PostMapping("/projects/{projectId}/milestones")
+    public ResponseEntity<MilestoneResponse> createMilestone(
+            @PathVariable("projectId") Long projectId,
+            @Valid @RequestBody MilestoneCreateRequest request,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        MilestoneResponse response = projectService.createMilestone(projectId, request, actorId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(summary = "Get all active milestones in a project")
+    @GetMapping("/projects/{projectId}/milestones")
+    public ResponseEntity<List<MilestoneResponse>> getProjectMilestones(
+            @PathVariable("projectId") Long projectId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        List<MilestoneResponse> response = projectService.getProjectMilestones(projectId, actorId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Get overdue milestones in a project")
+    @GetMapping("/projects/{projectId}/milestones/overdue")
+    public ResponseEntity<List<MilestoneResponse>> getOverdueMilestones(
+            @PathVariable("projectId") Long projectId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        List<MilestoneResponse> response = projectService.getOverdueMilestones(projectId, actorId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Update a milestone")
+    @PatchMapping("/milestones/{milestoneId}")
+    public ResponseEntity<MilestoneResponse> updateMilestone(
+            @PathVariable("milestoneId") Long milestoneId,
+            @Valid @RequestBody MilestoneUpdateRequest request,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        MilestoneResponse response = projectService.updateMilestone(milestoneId, request, actorId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Archive a milestone")
+    @PostMapping("/milestones/{milestoneId}/archive")
+    public ResponseEntity<MilestoneResponse> archiveMilestone(
+            @PathVariable("milestoneId") Long milestoneId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        MilestoneResponse response = projectService.archiveMilestone(milestoneId, actorId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Complete a milestone")
+    @PostMapping("/milestones/{milestoneId}/complete")
+    public ResponseEntity<MilestoneResponse> completeMilestone(
+            @PathVariable("milestoneId") Long milestoneId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        MilestoneResponse response = projectService.completeMilestone(milestoneId, actorId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Delete a milestone (soft delete)")
+    @DeleteMapping("/milestones/{milestoneId}")
+    public ResponseEntity<Void> deleteMilestone(
+            @PathVariable("milestoneId") Long milestoneId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        projectService.deleteMilestone(milestoneId, actorId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Assign a task to a milestone")
+    @PostMapping("/milestones/{milestoneId}/tasks/{taskId}")
+    public ResponseEntity<MilestoneResponse> assignTask(
+            @PathVariable("milestoneId") Long milestoneId,
+            @PathVariable("taskId") Long taskId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        MilestoneResponse response = projectService.assignTask(milestoneId, taskId, actorId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Remove a task from a milestone")
+    @DeleteMapping("/milestones/{milestoneId}/tasks/{taskId}")
+    public ResponseEntity<Void> removeTask(
+            @PathVariable("milestoneId") Long milestoneId,
+            @PathVariable("taskId") Long taskId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        projectService.removeTask(milestoneId, taskId, actorId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Get milestone progress")
+    @GetMapping("/milestones/{milestoneId}/progress")
+    public ResponseEntity<MilestoneProgressResponse> getMilestoneProgress(
+            @PathVariable("milestoneId") Long milestoneId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        MilestoneProgressResponse response = projectService.calculateProgress(milestoneId, actorId);
+        return ResponseEntity.ok(response);
+    }
+}

@@ -30,6 +30,9 @@ public class Task extends SoftDeleteEntity {
     @JoinColumn(name = "sprint_id")
     private Sprint sprint;
 
+    @Column(name = "milestone_id")
+    private Long milestoneId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_task_id")
     private Task parentTask;
@@ -69,6 +72,9 @@ public class Task extends SoftDeleteEntity {
 
     @Column(name = "is_archived", nullable = false)
     private Boolean archived = false;
+
+    @Column(name = "progress_percentage")
+    private Double progressPercentage = 0.0;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private java.util.List<TaskAssignment> assignments = new java.util.ArrayList<>();

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.SprintForge.common.entity.SoftDeleteEntity;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "task_watchers")
 @Getter
@@ -20,5 +22,10 @@ public class TaskWatcher extends SoftDeleteEntity {
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
-}
 
+    @Column(name = "watching_since")
+    private LocalDateTime watchingSince = LocalDateTime.now();
+
+    @Column(name = "notification_preference")
+    private String notificationPreference = "ALL";
+}

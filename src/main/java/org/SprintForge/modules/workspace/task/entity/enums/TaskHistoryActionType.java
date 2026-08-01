@@ -1,0 +1,22 @@
+package org.SprintForge.modules.workspace.task.entity.enums;
+
+public enum TaskHistoryActionType {
+    TASK_CREATED,
+    TASK_UPDATED,
+    STATUS_CHANGED,
+    PRIORITY_CHANGED,
+    ASSIGNEE_CHANGED,
+    LABEL_ADDED,
+    LABEL_REMOVED,
+    COMMENT_CREATED,
+    COMMENT_UPDATED,
+    ATTACHMENT_UPLOADED,
+    ATTACHMENT_REMOVED,
+    TIME_LOGGED,
+    CHECKLIST_COMPLETED,
+    CUSTOM_FIELD_UPDATED,
+    WATCHER_ADDED,
+    WATCHER_REMOVED,
+    ARCHIVED,
+    RESTORED
+}

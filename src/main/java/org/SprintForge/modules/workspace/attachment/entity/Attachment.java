@@ -30,25 +30,21 @@ public class Attachment extends SoftDeleteEntity {
     @Column(name = "original_file_name")
     private String originalFileName;
 
-    @Column(name = "file_type")
-    private String fileType;
+    @Column(name = "content_type")
+    private String contentType;
 
-    @Column(name = "mime_type")
-    private String mimeType;
+    @Column(name = "size")
+    private Long size;
 
-    @Column(name = "file_size")
-    private Long fileSize;
+    @Column(name = "storage_key")
+    private String storageKey;
 
-    @Column(name = "storage_provider")
-    private String storageProvider;
-
-    @Column(name = "storage_path")
-    private String storagePath;
-
-    @Column(name = "thumbnail_path")
-    private String thumbnailPath;
+    @Column(name = "download_url")
+    private String downloadUrl;
 
     @Column(name = "checksum")
     private String checksum;
-}
 
+    @Column(name = "is_archived", nullable = false)
+    private Boolean archived = false;
+}
