@@ -33,6 +33,9 @@ public class Task extends SoftDeleteEntity {
     @Column(name = "milestone_id")
     private Long milestoneId;
 
+    @Column(name = "release_id")
+    private Long releaseId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_task_id")
     private Task parentTask;

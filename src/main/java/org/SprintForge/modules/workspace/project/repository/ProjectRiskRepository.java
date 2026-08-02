@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProjectRiskRepository extends JpaRepository<ProjectRisk, Long>, JpaSpecificationExecutor<ProjectRisk> {
+
+    long countByProjectIdAndIsDeletedFalse(Long projectId);
 }

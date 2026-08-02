@@ -387,4 +387,30 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
 
         return resp;
     }
+
+    @Override
+    @Transactional
+    public ProjectMemberResponse toggleFavorite(Long projectId, Long actorId) {
+        ProjectMember member = projectMemberRepository.findByProjectIdAndUserIdAndIsDeletedFalse(projectId, actorId)
+                .or(() -> workspaceMemberRepository.findByWorkspaceIdAndUserIdAndIsDeletedFalse(
+                                projectRepository.findById(projectId).map(Project::getWorkspaceId).orElse(0L), actorId)
+                        .flatMap(wm -> projectMemberRepository.findByProjectIdAndWorkspaceMemberIdAndIsDeletedFalse(projectId, wm.getId())))
+                .orElseThrow(() -> new ResourceNotFoundException("Project member not found for user: " + actorId));
+
+        member.setFavorite(!Boolean.TRUE.equals(member.getFavorite()));
+        ProjectMember saved = projectMemberRepository.save(member);
+        return mapToResponse(saved);
+    }
+
+    @Override
+    @Transactional
+    public ProjectMemberResponse changeAllocation(Long projectId, Long memberId, Double allocationPercentage, Long actorId) {
+        ProjectMember member = projectMemberRepository.findById(memberId)
+                .filter(m -> !m.isDeleted() && m.getProjectId().equals(projectId))
+                .orElseThrow(() -> new ResourceNotFoundException("Project member not found with ID: " + memberId));
+
+        member.setAllocationPercentage(allocationPercentage);
+        ProjectMember saved = projectMemberRepository.save(member);
+        return mapToResponse(saved);
+    }
 }

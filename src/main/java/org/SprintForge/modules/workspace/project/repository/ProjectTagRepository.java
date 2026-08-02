@@ -7,4 +7,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProjectTagRepository extends JpaRepository<ProjectTag, Long>, JpaSpecificationExecutor<ProjectTag> {
+
+    java.util.List<ProjectTag> findByProjectIdAndIsDeletedFalse(Long projectId);
+
+    boolean existsByProjectIdAndNameAndIsDeletedFalse(Long projectId, String name);
 }

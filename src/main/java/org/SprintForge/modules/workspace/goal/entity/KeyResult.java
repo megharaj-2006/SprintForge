@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.SprintForge.common.entity.SoftDeleteEntity;
 
-@Entity
+@Entity(name = "LegacyGoalKeyResult")
 @Table(name = "key_results")
 @Getter
 @Setter

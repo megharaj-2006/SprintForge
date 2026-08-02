@@ -31,4 +31,8 @@ public interface ProjectMemberService {
     boolean isProjectMember(Long projectId, Long userId);
 
     boolean canAccessProject(Long projectId, Long userId);
+
+    ProjectMemberResponse toggleFavorite(Long projectId, Long actorId);
+
+    ProjectMemberResponse changeAllocation(Long projectId, Long memberId, Double allocationPercentage, Long actorId);
 }

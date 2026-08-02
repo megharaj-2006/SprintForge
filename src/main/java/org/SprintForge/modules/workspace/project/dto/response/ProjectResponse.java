@@ -27,8 +27,13 @@ public class ProjectResponse {
     private ProjectVisibility visibility;
     private ProjectStatusType status;
     private Long ownerId;
+    private String slug;
+    private Long leadId;
+    private Long defaultAssigneeId;
+    private Long categoryId;
     private LocalDate startDate;
     private LocalDate targetEndDate;
+    private LocalDate actualEndDate;
     private LocalDateTime completedAt;
     private Double progressPercentage;
     private Double budget;

@@ -10,7 +10,7 @@ import org.SprintForge.common.entity.SoftDeleteEntity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
+@Entity(name = "LegacyProjectGoal")
 @Table(name = "project_goals")
 @Getter
 @Setter

@@ -40,6 +40,10 @@ public class ProjectCreateRequest {
     private ProjectStatusType status;
 
     private Long ownerId;
+    private String slug;
+    private Long leadId;
+    private Long defaultAssigneeId;
+    private Long categoryId;
 
     private LocalDate startDate;
     private LocalDate targetEndDate;

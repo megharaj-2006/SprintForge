@@ -23,6 +23,8 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
 
     List<Task> findBySprintIdAndIsDeletedFalse(Long sprintId);
 
+    List<Task> findByReleaseIdAndIsDeletedFalse(Long releaseId);
+
     List<Task> findByProjectIdAndSprintIsNullAndIsDeletedFalseAndArchivedFalse(Long projectId);
 
     List<Task> findByStatusAndIsDeletedFalse(TaskStatus status);

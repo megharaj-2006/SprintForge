@@ -19,4 +19,16 @@ public interface ProjectLifecycleService {
     ProjectResponse duplicateProject(Long projectId, Long actorId);
 
     ProjectResponse transferOwnership(Long projectId, Long newOwnerId, Long actorId);
+
+    ProjectResponse changeLead(Long projectId, Long newLeadId, Long actorId);
+
+    ProjectResponse activateProject(Long projectId, Long actorId);
+
+    ProjectResponse pauseProject(Long projectId, Long actorId);
+
+    ProjectResponse resumeProject(Long projectId, Long actorId);
+
+    ProjectResponse completeProject(Long projectId, Boolean confirmOpenTasksOverride, Long actorId);
+
+    ProjectResponse cancelProject(Long projectId, Long actorId);
 }

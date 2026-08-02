@@ -22,7 +22,15 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Lo
 
     Optional<ProjectMember> findByProjectIdAndWorkspaceMemberIdAndIsDeletedFalse(Long projectId, Long workspaceMemberId);
 
+    Optional<ProjectMember> findByProjectIdAndUserIdAndIsDeletedFalse(Long projectId, Long userId);
+
     boolean existsByProjectIdAndWorkspaceMemberIdAndIsDeletedFalse(Long projectId, Long workspaceMemberId);
+
+    boolean existsByProjectIdAndUserIdAndIsDeletedFalse(Long projectId, Long userId);
+
+    List<ProjectMember> findByUserIdAndIsDeletedFalse(Long userId);
+
+    List<ProjectMember> findByProjectIdAndFavoriteTrueAndIsDeletedFalse(Long projectId);
 
     long countByProjectIdAndStatusAndIsDeletedFalse(Long projectId, ProjectMemberStatus status);
 

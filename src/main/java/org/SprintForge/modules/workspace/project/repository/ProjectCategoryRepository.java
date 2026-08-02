@@ -7,4 +7,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProjectCategoryRepository extends JpaRepository<ProjectCategory, Long>, JpaSpecificationExecutor<ProjectCategory> {
+
+    java.util.List<ProjectCategory> findByWorkspaceIdAndIsDeletedFalse(Long workspaceId);
+
+    boolean existsByWorkspaceIdAndNameAndIsDeletedFalse(Long workspaceId, String name);
 }

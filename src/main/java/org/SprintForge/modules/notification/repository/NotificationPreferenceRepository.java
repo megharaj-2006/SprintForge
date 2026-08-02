@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository("globalNotificationPreferenceRepository")
 public interface NotificationPreferenceRepository extends JpaRepository<NotificationPreference, Long>, JpaSpecificationExecutor<NotificationPreference> {
 }

@@ -18,14 +18,29 @@ import java.util.List;
 
 // Milestone DTOs — resolved via wildcard imports above (dto.request.* / dto.response.*)
 
+import org.SprintForge.modules.workspace.project.entity.ProjectCategory;
+import org.SprintForge.modules.workspace.project.entity.ProjectTag;
+import org.SprintForge.modules.workspace.project.service.category.ProjectCategoryService;
+import org.SprintForge.modules.workspace.project.service.dashboard.ProjectDashboardService;
+import org.SprintForge.modules.workspace.project.service.management.ProjectLifecycleService;
+import org.SprintForge.modules.workspace.project.service.member.ProjectMemberService;
+import org.SprintForge.modules.workspace.project.service.role.ProjectRoleService;
+import org.SprintForge.modules.workspace.project.service.tag.ProjectTagService;
+
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-@Tag(name = "Project Controller", description = "REST endpoints for managing project lifecycle, queries, settings, and membership")
+@Tag(name = "Project Controller", description = "REST endpoints for managing project lifecycle, queries, settings, membership, roles, categories, and dashboard")
 @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final ProjectLifecycleService projectLifecycleService;
+    private final ProjectMemberService projectMemberService;
+    private final ProjectRoleService projectRoleService;
+    private final ProjectCategoryService projectCategoryService;
+    private final ProjectTagService projectTagService;
+    private final ProjectDashboardService projectDashboardService;
 
     @Operation(summary = "Create a project in a workspace")
     @PostMapping("/workspaces/{workspaceId}/projects")
@@ -111,13 +126,74 @@ public class ProjectController {
     }
 
     @Operation(summary = "Transfer ownership of a project")
-    @PostMapping("/projects/{projectId}/transfer-ownership")
+    @PostMapping({"/projects/{projectId}/transfer-ownership", "/projects/{projectId}/transfer"})
     public ResponseEntity<ProjectResponse> transferOwnership(
             @PathVariable("projectId") Long projectId,
-            @RequestParam("newOwnerId") Long newOwnerId,
+            @RequestParam(value = "newOwnerId", required = false) Long newOwnerIdParam,
+            @RequestBody(required = false) TransferProjectOwnershipRequest requestBody,
             @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
-        ProjectResponse response = projectService.transferOwnership(projectId, newOwnerId, actorId);
+        Long targetOwnerId = newOwnerIdParam != null ? newOwnerIdParam : (requestBody != null ? requestBody.getNewOwnerUserId() : null);
+        ProjectResponse response = projectService.transferOwnership(projectId, targetOwnerId, actorId);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Change project lead")
+    @PostMapping("/projects/{projectId}/lead")
+    public ResponseEntity<ProjectResponse> changeLead(
+            @PathVariable("projectId") Long projectId,
+            @Valid @RequestBody ChangeProjectLeadRequest request,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        ProjectResponse response = projectLifecycleService.changeLead(projectId, request.getNewLeadId(), actorId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Activate project")
+    @PostMapping("/projects/{projectId}/lifecycle/activate")
+    public ResponseEntity<ProjectResponse> activateProject(
+            @PathVariable("projectId") Long projectId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.ok(projectLifecycleService.activateProject(projectId, actorId));
+    }
+
+    @Operation(summary = "Pause project")
+    @PostMapping("/projects/{projectId}/lifecycle/pause")
+    public ResponseEntity<ProjectResponse> pauseProject(
+            @PathVariable("projectId") Long projectId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.ok(projectLifecycleService.pauseProject(projectId, actorId));
+    }
+
+    @Operation(summary = "Resume project")
+    @PostMapping("/projects/{projectId}/lifecycle/resume")
+    public ResponseEntity<ProjectResponse> resumeProject(
+            @PathVariable("projectId") Long projectId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.ok(projectLifecycleService.resumeProject(projectId, actorId));
+    }
+
+    @Operation(summary = "Complete project")
+    @PostMapping("/projects/{projectId}/lifecycle/complete")
+    public ResponseEntity<ProjectResponse> completeProject(
+            @PathVariable("projectId") Long projectId,
+            @RequestParam(value = "confirmOverride", defaultValue = "false") Boolean confirmOverride,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.ok(projectLifecycleService.completeProject(projectId, confirmOverride, actorId));
+    }
+
+    @Operation(summary = "Cancel project")
+    @PostMapping("/projects/{projectId}/lifecycle/cancel")
+    public ResponseEntity<ProjectResponse> cancelProject(
+            @PathVariable("projectId") Long projectId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.ok(projectLifecycleService.cancelProject(projectId, actorId));
+    }
+
+    @Operation(summary = "Get project dashboard summary")
+    @GetMapping("/projects/{projectId}/dashboard")
+    public ResponseEntity<ProjectDashboardSummaryResponse> getDashboardSummary(
+            @PathVariable("projectId") Long projectId,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.ok(projectDashboardService.getDashboardSummary(projectId, actorId));
     }
 
     @Operation(summary = "Get project settings")
@@ -219,13 +295,84 @@ public class ProjectController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Leave a project")
-    @PostMapping("/projects/{projectId}/leave")
-    public ResponseEntity<Void> leaveProject(
+    @Operation(summary = "Toggle favorite status for project")
+    @PostMapping("/projects/{projectId}/favorite")
+    public ResponseEntity<ProjectMemberResponse> toggleFavorite(
             @PathVariable("projectId") Long projectId,
             @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
-        projectService.leaveProject(projectId, actorId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(projectMemberService.toggleFavorite(projectId, actorId));
+    }
+
+    @Operation(summary = "Change allocation percentage of a project member")
+    @PatchMapping("/projects/{projectId}/members/{memberId}/allocation")
+    public ResponseEntity<ProjectMemberResponse> changeAllocation(
+            @PathVariable("projectId") Long projectId,
+            @PathVariable("memberId") Long memberId,
+            @Valid @RequestBody UpdateMemberAllocationRequest request,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.ok(projectMemberService.changeAllocation(projectId, memberId, request.getAllocationPercentage(), actorId));
+    }
+
+    @Operation(summary = "Get project roles")
+    @GetMapping("/projects/{projectId}/roles")
+    public ResponseEntity<List<ProjectRoleResponse>> getRoles(
+            @PathVariable("projectId") Long projectId) {
+        return ResponseEntity.ok(projectRoleService.getRoles(projectId));
+    }
+
+    @Operation(summary = "Create a project role")
+    @PostMapping("/projects/{projectId}/roles")
+    public ResponseEntity<ProjectRoleResponse> createRole(
+            @PathVariable("projectId") Long projectId,
+            @Valid @RequestBody CreateProjectRoleRequest request,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(projectRoleService.createRole(projectId, request, actorId));
+    }
+
+    @Operation(summary = "Clone a project role")
+    @PostMapping("/projects/{projectId}/roles/{roleId}/clone")
+    public ResponseEntity<ProjectRoleResponse> cloneRole(
+            @PathVariable("projectId") Long projectId,
+            @PathVariable("roleId") Long roleId,
+            @RequestParam(value = "newRoleName", required = false) String newRoleName,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(projectRoleService.cloneRole(roleId, newRoleName, actorId));
+    }
+
+    @Operation(summary = "Get workspace project categories")
+    @GetMapping("/workspaces/{workspaceId}/project-categories")
+    public ResponseEntity<List<ProjectCategory>> getCategories(
+            @PathVariable("workspaceId") Long workspaceId) {
+        return ResponseEntity.ok(projectCategoryService.getCategories(workspaceId));
+    }
+
+    @Operation(summary = "Create workspace project category")
+    @PostMapping("/workspaces/{workspaceId}/project-categories")
+    public ResponseEntity<ProjectCategory> createCategory(
+            @PathVariable("workspaceId") Long workspaceId,
+            @RequestParam("name") String name,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "color", required = false) String color,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(projectCategoryService.createCategory(workspaceId, name, description, color, actorId));
+    }
+
+    @Operation(summary = "Get project tags")
+    @GetMapping("/projects/{projectId}/tags")
+    public ResponseEntity<List<ProjectTag>> getTags(
+            @PathVariable("projectId") Long projectId) {
+        return ResponseEntity.ok(projectTagService.getTags(projectId));
+    }
+
+    @Operation(summary = "Create project tag")
+    @PostMapping("/projects/{projectId}/tags")
+    public ResponseEntity<ProjectTag> createTag(
+            @PathVariable("projectId") Long projectId,
+            @RequestParam("name") String name,
+            @RequestParam(value = "color", required = false) String color,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(projectTagService.createTag(projectId, name, color, description, actorId));
     }
 
     // -------------------------------------------------------------------------

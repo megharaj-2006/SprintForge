@@ -37,9 +37,18 @@ public class ProjectMember extends SoftDeleteEntity {
     @Column(name = "status")
     private ProjectMemberStatus status = ProjectMemberStatus.ACTIVE;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     @Column(name = "favorite")
     private Boolean favorite = false;
 
     @Column(name = "notifications_enabled")
     private Boolean notificationsEnabled = true;
+
+    @Column(name = "allocation_percentage")
+    private Double allocationPercentage = 100.0;
+
+    @Column(name = "last_accessed")
+    private LocalDateTime lastAccessed;
 }

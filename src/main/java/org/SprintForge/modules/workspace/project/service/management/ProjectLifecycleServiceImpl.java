@@ -33,6 +33,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+import org.SprintForge.modules.workspace.task.entity.Task;
+import org.SprintForge.modules.workspace.task.entity.enums.TaskStatus;
+import org.SprintForge.modules.workspace.task.repository.TaskRepository;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProjectLifecycleServiceImpl implements ProjectLifecycleService {
@@ -45,6 +56,7 @@ public class ProjectLifecycleServiceImpl implements ProjectLifecycleService {
     private final WorkspaceMemberRepository workspaceMemberRepository;
     private final WorkspaceSubscriptionRepository workspaceSubscriptionRepository;
     private final WorkspacePermissionService workspacePermissionService;
+    private final TaskRepository taskRepository;
     private final ProjectMapper projectMapper;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -361,6 +373,89 @@ public class ProjectLifecycleServiceImpl implements ProjectLifecycleService {
 
         eventPublisher.publishEvent(new ProjectOwnershipTransferredEvent(projectId, prevOwnerId, newOwnerId, actorId, LocalDateTime.now()));
 
+        return projectMapper.toResponse(saved);
+    }
+
+    @Override
+    @Transactional
+    public ProjectResponse changeLead(Long projectId, Long newLeadId, Long actorId) {
+        Project project = projectRepository.findById(projectId)
+                .filter(p -> !p.isDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + projectId));
+
+        Long oldLeadId = project.getLeadId();
+        project.setLeadId(newLeadId);
+        Project saved = projectRepository.save(project);
+
+        eventPublisher.publishEvent(new ProjectLeadChangedEvent(projectId, oldLeadId, newLeadId, actorId));
+        return projectMapper.toResponse(saved);
+    }
+
+    @Override
+    @Transactional
+    public ProjectResponse activateProject(Long projectId, Long actorId) {
+        Project project = projectRepository.findById(projectId)
+                .filter(p -> !p.isDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + projectId));
+
+        project.setStatus(ProjectStatusType.ACTIVE);
+        Project saved = projectRepository.save(project);
+        eventPublisher.publishEvent(new ProjectUpdatedEvent(projectId, actorId, LocalDateTime.now()));
+        return projectMapper.toResponse(saved);
+    }
+
+    @Override
+    @Transactional
+    public ProjectResponse pauseProject(Long projectId, Long actorId) {
+        Project project = projectRepository.findById(projectId)
+                .filter(p -> !p.isDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + projectId));
+
+        project.setStatus(ProjectStatusType.ON_HOLD);
+        Project saved = projectRepository.save(project);
+        eventPublisher.publishEvent(new ProjectUpdatedEvent(projectId, actorId, LocalDateTime.now()));
+        return projectMapper.toResponse(saved);
+    }
+
+    @Override
+    @Transactional
+    public ProjectResponse resumeProject(Long projectId, Long actorId) {
+        return activateProject(projectId, actorId);
+    }
+
+    @Override
+    @Transactional
+    public ProjectResponse completeProject(Long projectId, Boolean confirmOpenTasksOverride, Long actorId) {
+        Project project = projectRepository.findById(projectId)
+                .filter(p -> !p.isDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + projectId));
+
+        List<Task> tasks = taskRepository.findByProjectIdAndIsDeletedFalse(projectId);
+        long openTasksCount = tasks.stream().filter(t -> t.getStatus() != TaskStatus.DONE).count();
+
+        if (openTasksCount > 0 && !Boolean.TRUE.equals(confirmOpenTasksOverride)) {
+            throw new BusinessRuleException("Cannot complete project: " + openTasksCount + " open tasks exist. Confirm override to complete.");
+        }
+
+        project.setStatus(ProjectStatusType.COMPLETED);
+        project.setActualEndDate(LocalDate.now());
+        project.setCompletedAt(LocalDateTime.now());
+        Project saved = projectRepository.save(project);
+
+        eventPublisher.publishEvent(new ProjectUpdatedEvent(projectId, actorId, LocalDateTime.now()));
+        return projectMapper.toResponse(saved);
+    }
+
+    @Override
+    @Transactional
+    public ProjectResponse cancelProject(Long projectId, Long actorId) {
+        Project project = projectRepository.findById(projectId)
+                .filter(p -> !p.isDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + projectId));
+
+        project.setStatus(ProjectStatusType.CANCELLED);
+        Project saved = projectRepository.save(project);
+        eventPublisher.publishEvent(new ProjectUpdatedEvent(projectId, actorId, LocalDateTime.now()));
         return projectMapper.toResponse(saved);
     }
 

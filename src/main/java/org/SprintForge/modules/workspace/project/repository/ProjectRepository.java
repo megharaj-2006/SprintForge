@@ -17,9 +17,13 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
 
     Optional<Project> findByWorkspaceIdAndProjectKeyAndIsDeletedFalse(Long workspaceId, String projectKey);
 
+    Optional<Project> findByWorkspaceIdAndSlugAndIsDeletedFalse(Long workspaceId, String slug);
+
     boolean existsByWorkspaceIdAndNameAndIsDeletedFalse(Long workspaceId, String name);
 
     boolean existsByWorkspaceIdAndProjectKeyAndIsDeletedFalse(Long workspaceId, String projectKey);
+
+    boolean existsByWorkspaceIdAndSlugAndIsDeletedFalse(Long workspaceId, String slug);
 
     List<Project> findByWorkspaceIdAndIsDeletedFalse(Long workspaceId);
 

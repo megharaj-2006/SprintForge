@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository("legacyProjectGoalRepository")
 public interface ProjectGoalRepository extends JpaRepository<ProjectGoal, Long>, JpaSpecificationExecutor<ProjectGoal> {
 }

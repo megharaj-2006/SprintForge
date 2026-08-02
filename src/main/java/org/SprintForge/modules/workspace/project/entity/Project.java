@@ -52,11 +52,26 @@ public class Project extends SoftDeleteEntity {
     @Column(name = "owner_id")
     private Long ownerId;
 
+    @Column(name = "slug")
+    private String slug;
+
+    @Column(name = "lead_id")
+    private Long leadId;
+
+    @Column(name = "default_assignee_id")
+    private Long defaultAssigneeId;
+
+    @Column(name = "category_id")
+    private Long categoryId;
+
     @Column(name = "start_date")
     private LocalDate startDate;
 
     @Column(name = "target_end_date")
     private LocalDate targetEndDate;
+
+    @Column(name = "actual_end_date")
+    private LocalDate actualEndDate;
 
     @Column(name = "completed_at")
     private LocalDateTime completedAt;

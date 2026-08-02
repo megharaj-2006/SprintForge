@@ -30,9 +30,14 @@ public class ProjectUpdateRequest {
     private ProjectStatusType status;
 
     private Long ownerId;
+    private String slug;
+    private Long leadId;
+    private Long defaultAssigneeId;
+    private Long categoryId;
 
     private LocalDate startDate;
     private LocalDate targetEndDate;
+    private LocalDate actualEndDate;
 
     private Double progressPercentage;
     private Double budget;

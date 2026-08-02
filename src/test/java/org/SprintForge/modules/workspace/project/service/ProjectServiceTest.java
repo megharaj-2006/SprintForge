@@ -19,6 +19,7 @@ import org.SprintForge.modules.workspace.project.repository.ProjectMemberReposit
 import org.SprintForge.modules.workspace.project.repository.ProjectRepository;
 import org.SprintForge.modules.workspace.project.repository.ProjectRoleRepository;
 import org.SprintForge.modules.workspace.project.repository.ProjectSettingsRepository;
+import org.SprintForge.modules.workspace.task.repository.TaskRepository;
 import org.SprintForge.modules.workspace.project.service.management.ProjectLifecycleServiceImpl;
 import org.SprintForge.modules.workspace.project.service.query.ProjectQueryServiceImpl;
 import org.SprintForge.modules.workspace.workspace.entity.Workspace;
@@ -71,6 +72,9 @@ class ProjectServiceTest {
     private WorkspacePermissionService workspacePermissionService;
 
     @Mock
+    private TaskRepository taskRepository;
+
+    @Mock
     private ProjectMapper projectMapper;
 
     @Mock
@@ -94,6 +98,7 @@ class ProjectServiceTest {
                 workspaceMemberRepository,
                 workspaceSubscriptionRepository,
                 workspacePermissionService,
+                taskRepository,
                 projectMapper,
                 eventPublisher
         );

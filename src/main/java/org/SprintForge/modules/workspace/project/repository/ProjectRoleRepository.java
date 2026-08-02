@@ -11,4 +11,8 @@ import java.util.Optional;
 public interface ProjectRoleRepository extends JpaRepository<ProjectRole, Long>, JpaSpecificationExecutor<ProjectRole> {
 
     Optional<ProjectRole> findByProjectIdAndNameAndIsDeletedFalse(Long projectId, String name);
+
+    boolean existsByProjectIdAndNameAndIsDeletedFalse(Long projectId, String name);
+
+    java.util.List<ProjectRole> findByProjectIdAndIsDeletedFalse(Long projectId);
 }
