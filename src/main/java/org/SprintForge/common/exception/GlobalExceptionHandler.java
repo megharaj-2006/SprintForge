@@ -184,12 +184,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
+    @org.springframework.beans.factory.annotation.Value("${spring.profiles.active:prod}")
+    private String activeProfile;
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGenericException(Exception ex, HttpServletRequest request) {
+        String safeMessage = "local".equalsIgnoreCase(activeProfile) || "dev".equalsIgnoreCase(activeProfile)
+                ? ex.getMessage()
+                : "An unexpected error occurred. Please contact system support.";
+
         ApiErrorResponse response = ApiErrorResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("Internal Server Error")
-                .message(ex.getMessage())
+                .message(safeMessage)
                 .path(request.getRequestURI())
                 .code(ErrorCode.INTERNAL_SERVER_ERROR.getValue())
                 .build();
