@@ -7,8 +7,8 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
-public class AuthenticationManager {
+@Component("integrationAuthenticationManager")
+public class IntegrationAuthenticationManager {
 
     public Map<String, String> generateAuthHeaders(CredentialType type, String decryptedCredential) {
         Map<String, String> headers = new HashMap<>();
