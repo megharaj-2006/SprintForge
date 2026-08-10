@@ -14,7 +14,7 @@ import org.SprintForge.modules.workspace.workspace.dto.response.*;
 
 import java.util.List;
 
-@Mapper(config = GlobalMapperConfig.class)
+@Mapper(config = GlobalMapperConfig.class, builder = @org.mapstruct.Builder(disableBuilder = true))
 public interface WorkspaceMapper {
 
     // ==========================================
@@ -51,14 +51,12 @@ public interface WorkspaceMapper {
     @Mapping(target = "archived", ignore = true)
     void updateEntity(WorkspaceUpdateRequest dto, @MappingTarget Workspace entity);
 
-    @Mapping(target = "isArchived", source = "archived")
+    @Mapping(target = "archived", source = "archived")
     WorkspaceResponse toResponse(Workspace entity);
 
-    @Mapping(target = "isArchived", source = "archived")
     @Mapping(target = "memberCount", ignore = true)
     WorkspaceSummaryResponse toSummaryResponse(Workspace entity);
 
-    @Mapping(target = "isArchived", source = "archived")
     @Mapping(target = "ownerName", ignore = true)
     @Mapping(target = "ownerEmail", ignore = true)
     @Mapping(target = "activeMemberCount", ignore = true)
@@ -253,7 +251,10 @@ public interface WorkspaceMapper {
     @Mapping(target = "deletedAt", ignore = true)
     @Mapping(target = "deletedBy", ignore = true)
     @Mapping(target = "version", ignore = true)
-    @Mapping(target = "lastTriggeredAt", ignore = true)
+    @Mapping(target = "lastDeliveryAt", ignore = true)
+    @Mapping(target = "lastDeliveryStatus", ignore = true)
+    @Mapping(target = "failureCount", ignore = true)
+    @Mapping(target = "createdById", ignore = true)
     WorkspaceWebhook toEntity(WorkspaceWebhookCreateRequest dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -267,7 +268,10 @@ public interface WorkspaceMapper {
     @Mapping(target = "deletedBy", ignore = true)
     @Mapping(target = "version", ignore = true)
     @Mapping(target = "workspaceId", ignore = true)
-    @Mapping(target = "lastTriggeredAt", ignore = true)
+    @Mapping(target = "lastDeliveryAt", ignore = true)
+    @Mapping(target = "lastDeliveryStatus", ignore = true)
+    @Mapping(target = "failureCount", ignore = true)
+    @Mapping(target = "createdById", ignore = true)
     void updateEntity(WorkspaceWebhookUpdateRequest dto, @MappingTarget WorkspaceWebhook entity);
 
     WorkspaceWebhookResponse toResponse(WorkspaceWebhook entity);
@@ -283,7 +287,7 @@ public interface WorkspaceMapper {
 
     List<WorkspaceActivityResponse> toActivityResponseList(List<WorkspaceActivity> entities);
 
-    @Mapping(target = "userId", source = "performedBy")
+    @Mapping(target = "userId", source = "createdBy")
     @Mapping(target = "userName", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "details", ignore = true)

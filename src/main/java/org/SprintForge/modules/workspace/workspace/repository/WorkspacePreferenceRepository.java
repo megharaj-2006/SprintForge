@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface WorkspacePreferenceRepository extends JpaRepository<WorkspacePreference, Long>, JpaSpecificationExecutor<WorkspacePreference> {
 
     Optional<WorkspacePreference> findByWorkspaceIdAndUserIdAndIsDeletedFalse(Long workspaceId, Long userId);
+
+    Optional<WorkspacePreference> findByWorkspaceIdAndUserIdIsNull(Long workspaceId);
 }
