@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: ${DB_URL:${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/SprintForge}}
+    url: ${DB_URL:${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/SprintForge}}
     username: ${DB_USERNAME:${SPRING_DATASOURCE_USERNAME:postgres}}
     password: ${DB_PASSWORD:${SPRING_DATASOURCE_PASSWORD:postgres}}
     driver-class-name: org.postgresql.Driver
@@ -37,5 +37,5 @@ server:
 
 logging:
   level:
-    root: WARN
-    org.SprintForge: INFO
+    root: ${LOG_LEVEL_ROOT:WARN}
+    org.SprintForge: ${LOG_LEVEL_SPRINTFORGE:INFO}

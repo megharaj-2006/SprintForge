@@ -1,0 +1,15 @@
+.git
+.gitignore
+.gradle
+.idea
+build
+out
+bin
+*.log
+*.tmp
+.env
+.env.*
+docker.env
+README.md
+docs
+artifacts

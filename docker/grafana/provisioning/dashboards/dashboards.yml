@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: 'SprintForge Dashboards'
+    orgId: 1
+    folder: 'SprintForge Platform'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards
