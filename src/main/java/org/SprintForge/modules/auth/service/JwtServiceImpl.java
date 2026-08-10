@@ -13,7 +13,7 @@ import java.util.function.Function;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    @Value("${jwt.secret:9a6747fc6259aa374ab4e1bb2a0918d653777c5760848033282b8a74e622b7c6}")
+    @Value("${jwt.secret}")
     private String secret;
 
     @Value("${jwt.expiration:86400000}") // 1 day

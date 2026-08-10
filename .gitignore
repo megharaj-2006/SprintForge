@@ -37,3 +37,9 @@ out/
 .vscode/
 **/application-local.properties
 uploads/
+
+### Environment & Secrets ###
+.env
+.env.*
+!.env.example
+
