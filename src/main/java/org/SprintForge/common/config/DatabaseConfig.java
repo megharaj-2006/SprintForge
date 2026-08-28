@@ -56,8 +56,10 @@ public class DatabaseConfig {
         config.setUsername(username);
         config.setPassword(password);
         config.setDriverClassName("org.postgresql.Driver");
-        config.setMaximumPoolSize(10);
-        config.setMinimumIdle(2);
+        config.setMaximumPoolSize(5);
+        config.setMinimumIdle(1);
+        config.setIdleTimeout(600000);
+        config.setMaxLifetime(1800000);
         config.setConnectionTimeout(30000);
         config.setPoolName("SprintForgeHikariPool");
 
