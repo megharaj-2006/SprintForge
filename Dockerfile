@@ -7,7 +7,7 @@
 # ----------------------------------------------------------------------------
 # Build Stage
 # ----------------------------------------------------------------------------
-FROM eclipse-adoptium:21-jdk-alpine AS builder
+FROM eclipse-temurin:21-jdk-alpine AS builder
 
 WORKDIR /app
 
@@ -29,7 +29,7 @@ RUN ./gradlew bootJar -x test --no-daemon
 # ----------------------------------------------------------------------------
 # Runtime Stage
 # ----------------------------------------------------------------------------
-FROM eclipse-adoptium:21-jre-alpine AS runner
+FROM eclipse-temurin:21-jre-alpine AS runner
 
 # Create non-root system user and group
 RUN addgroup -S sprintforge && adduser -S sprintforge -G sprintforge -u 10001
