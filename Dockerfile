@@ -53,9 +53,5 @@ ENV JAVA_OPTS="-XX:+UseG1GC -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryErro
     SPRING_PROFILES_ACTIVE="prod" \
     PORT=8080
 
-# Health check using Actuator readiness probe endpoint
-HEALTHCHECK --interval=15s --timeout=5s --start-period=60s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-8080}/actuator/health || exit 1
-
-# Entrypoint execution
-ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar app.jar"]
+# Entrypoint execution with explicit server.port binding for cloud PaaS (Render, Heroku, Cloud Run)
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -Dserver.port=${PORT:-8080} -jar app.jar"]
