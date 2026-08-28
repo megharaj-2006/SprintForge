@@ -46,16 +46,16 @@ COPY --from=builder --chown=sprintforge:sprintforge /app/build/libs/*.jar app.ja
 USER sprintforge:sprintforge
 
 # Expose Spring Boot HTTP port
-EXPOSE 8080
+EXPOSE 8080 10000
 
 # Environment variables with sensible container defaults
 ENV JAVA_OPTS="-XX:+UseG1GC -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError" \
     SPRING_PROFILES_ACTIVE="prod" \
-    SERVER_PORT=8080
+    PORT=8080
 
 # Health check using Actuator readiness probe endpoint
-HEALTHCHECK --interval=15s --timeout=5s --start-period=40s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+HEALTHCHECK --interval=15s --timeout=5s --start-period=60s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-8080}/actuator/health || exit 1
 
 # Entrypoint execution
 ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar app.jar"]
