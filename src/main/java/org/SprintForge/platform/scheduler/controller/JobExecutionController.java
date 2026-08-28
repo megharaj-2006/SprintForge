@@ -5,12 +5,14 @@ import org.SprintForge.platform.scheduler.dto.JobResponse;
 import org.SprintForge.platform.scheduler.queue.JobQueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController("platformJobExecutionController")
 @RequestMapping("/jobs")
+@PreAuthorize("hasRole('ADMIN')")
 public class JobExecutionController {
 
     private final JobQueueService jobQueueService;

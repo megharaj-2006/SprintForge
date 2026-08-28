@@ -4,12 +4,14 @@ import org.SprintForge.platform.scheduler.dto.JobResponse;
 import org.SprintForge.platform.scheduler.retry.RecoveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController("platformJobRecoveryController")
 @RequestMapping("/jobs")
+@PreAuthorize("hasRole('ADMIN')")
 public class JobRecoveryController {
 
     private final RecoveryService recoveryService;

@@ -5,12 +5,14 @@ import org.SprintForge.platform.audit.dto.CreateAuditRequest;
 import org.SprintForge.platform.audit.service.AuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController("platformAuditController")
 @RequestMapping("/audit")
+@PreAuthorize("hasRole('ADMIN')")
 public class AuditController {
 
     private final AuditService auditService;

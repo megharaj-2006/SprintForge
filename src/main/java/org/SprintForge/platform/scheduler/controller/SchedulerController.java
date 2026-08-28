@@ -6,12 +6,14 @@ import org.SprintForge.platform.scheduler.dto.ScheduleJobRequest;
 import org.SprintForge.platform.scheduler.scheduler.SchedulerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController("platformSchedulerController")
 @RequestMapping("/scheduler")
+@PreAuthorize("hasRole('ADMIN')")
 public class SchedulerController {
 
     private final SchedulerService schedulerService;

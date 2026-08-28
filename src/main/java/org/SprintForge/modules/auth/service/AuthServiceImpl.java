@@ -157,9 +157,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void forgotPassword(ForgotPasswordRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new AuthException("User not found with email: " + request.getEmail()));
+        var userOpt = userRepository.findByEmail(request.getEmail());
+        if (userOpt.isEmpty()) {
+            log.info("Password reset requested for non-existent email (enumeration mitigated).");
+            return;
+        }
 
+        User user = userOpt.get();
         String token = UUID.randomUUID().toString();
         PasswordResetToken resetToken = PasswordResetToken.builder()
                 .token(token)
@@ -168,8 +172,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         passwordResetTokenRepository.save(resetToken);
-
-        log.debug("Password reset token generated for user: {} - Token: {}", user.getUsername(), token);
+        log.info("Password reset token generated for user ID: {}", user.getId());
     }
 
     @Override
@@ -188,6 +191,8 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         passwordResetTokenRepository.delete(resetToken);
+        // Revoke all existing sessions upon password reset
+        refreshTokenRepository.deleteByUser(user);
     }
 
     @Override
@@ -202,6 +207,9 @@ public class AuthServiceImpl implements AuthService {
 
         user.setPassword(passwordService.encode(request.getNewPassword()));
         userRepository.save(user);
+
+        // Revoke all existing sessions upon password change
+        refreshTokenRepository.deleteByUser(user);
     }
 
     // Cron job to run daily at 2 AM to clean up expired refresh tokens

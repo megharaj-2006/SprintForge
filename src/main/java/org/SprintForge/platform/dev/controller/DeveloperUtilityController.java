@@ -9,8 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController("platformDeveloperUtilityController")
 @RequestMapping("/developer")
+@Profile({"dev", "test"})
+@PreAuthorize("hasRole('ADMIN')")
 public class DeveloperUtilityController {
 
     private final DeveloperUtilityService developerUtilityService;

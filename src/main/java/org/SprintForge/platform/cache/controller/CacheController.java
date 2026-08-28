@@ -4,10 +4,12 @@ import org.SprintForge.platform.cache.dto.CacheStatisticsResponse;
 import org.SprintForge.platform.cache.service.CacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("platformCacheController")
 @RequestMapping("/cache")
+@PreAuthorize("hasRole('ADMIN')")
 public class CacheController {
 
     private final CacheService cacheService;

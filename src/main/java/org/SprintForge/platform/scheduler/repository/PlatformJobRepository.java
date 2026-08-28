@@ -20,6 +20,9 @@ public interface PlatformJobRepository extends JpaRepository<PlatformJob, Long> 
     @Query("SELECT j FROM PlatformJob j WHERE j.status = org.SprintForge.platform.scheduler.domain.JobStatus.QUEUED ORDER BY j.priority DESC, j.createdAt ASC")
     List<PlatformJob> findQueued(Pageable pageable);
 
+    @Query(value = "SELECT * FROM platform_jobs WHERE status = 'QUEUED' ORDER BY priority DESC, created_at ASC LIMIT :batchSize FOR UPDATE SKIP LOCKED", nativeQuery = true)
+    List<PlatformJob> claimQueuedJobs(@Param("batchSize") int batchSize);
+
     @Query("SELECT j FROM PlatformJob j WHERE j.status = org.SprintForge.platform.scheduler.domain.JobStatus.RUNNING")
     List<PlatformJob> findRunning();
 

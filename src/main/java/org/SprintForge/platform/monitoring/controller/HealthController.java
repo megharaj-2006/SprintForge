@@ -26,11 +26,13 @@ public class HealthController {
         return ResponseEntity.ok(healthService.checkHealth());
     }
 
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/health/details")
     public ResponseEntity<HealthCheckResponse> getHealthDetails() {
         return ResponseEntity.ok(healthService.checkHealth());
     }
 
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/metrics")
     public ResponseEntity<Map<String, Object>> getMetrics() {
         return ResponseEntity.ok(Map.of(

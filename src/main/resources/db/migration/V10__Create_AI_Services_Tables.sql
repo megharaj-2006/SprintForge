@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS ai_execution_policies (
 );
 
 -- Seed initial Execution Policies
-INSERT INTO ai_execution_policies (policy_key, name, description, preferred_provider, preferred_model, fallback_provider, fallback_model, max_cost, max_latency_ms)
+INSERT INTO ai_execution_policies (policy_key, name, description, preferred_provider, preferred_model, fallback_provider, fallback_model)
 VALUES 
   ('BALANCED', 'Balanced Default Policy', 'Default policy balancing latency, cost, and quality', 'openai', 'gpt-4o', 'gemini', 'gemini-1.5-pro'),
   ('FASTEST', 'Low Latency Policy', 'Optimized for minimum latency responses', 'ollama', 'llama3', 'openai', 'gpt-4o-mini'),

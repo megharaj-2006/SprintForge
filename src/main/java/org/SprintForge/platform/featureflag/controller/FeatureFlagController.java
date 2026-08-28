@@ -4,12 +4,14 @@ import org.SprintForge.platform.featureflag.dto.FeatureFlagResponse;
 import org.SprintForge.platform.featureflag.service.FeatureFlagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController("platformFeatureFlagController")
 @RequestMapping("/feature-flags")
+@PreAuthorize("hasRole('ADMIN')")
 public class FeatureFlagController {
 
     private final FeatureFlagService featureFlagService;

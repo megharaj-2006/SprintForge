@@ -26,7 +26,7 @@ public class SprintForgeProperties {
     @Getter
     @Setter
     public static class Jwt {
-        private String secret = "9a6747fc6259aa374ab4e1bb2a0918d653777c5760848033282b8a74e622b7c6";
+        private String secret;
         private long expiration = 86400000L;
     }
 

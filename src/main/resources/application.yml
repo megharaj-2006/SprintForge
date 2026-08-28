@@ -13,7 +13,7 @@ server:
 sprintforge:
   security:
     jwt:
-      secret: ${JWT_SECRET:9a6747fc6259aa374ab4e1bb2a0918d653777c5760848033282b8a74e622b7c6}
+      secret: ${JWT_SECRET}
       expiration: ${JWT_EXPIRATION:86400000}
     cors:
       allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:*}
@@ -22,10 +22,9 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,metrics,prometheus
+        include: health,metrics,info
   endpoint:
     health:
       show-details: when_authorized
       probes:
         enabled: true
-
