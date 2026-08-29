@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service("platformNotificationManagementService")
@@ -23,7 +23,7 @@ public class NotificationManagementService {
                 .orElseThrow(() -> new ResourceNotFoundException("Notification", "id", id));
         if (!notification.isRead()) {
             notification.setRead(true);
-            notification.setReadAt(Instant.now());
+            notification.setReadAt(LocalDateTime.now());
             notification.setStatus(NotificationStatus.READ);
             notification = notificationRepository.save(notification);
         }
@@ -36,7 +36,7 @@ public class NotificationManagementService {
                 .findByRecipientIdAndIsReadFalseAndIsArchivedFalseOrderByCreatedAtDesc(recipientId, Pageable.unpaged());
         for (PlatformNotification n : unread) {
             n.setRead(true);
-            n.setReadAt(Instant.now());
+            n.setReadAt(LocalDateTime.now());
             n.setStatus(NotificationStatus.READ);
         }
         notificationRepository.saveAll(unread);

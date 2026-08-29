@@ -8,7 +8,7 @@ import org.SprintForge.platform.communication.notification.NotificationChannel;
 import org.SprintForge.platform.communication.notification.NotificationType;
 import org.SprintForge.platform.communication.preference.DigestFrequency;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -21,6 +21,6 @@ public class NotificationPreferenceResponse {
     private NotificationChannel channel;
     private NotificationType notificationType;
     private boolean enabled;
-    private Instant muteUntil;
+    private LocalDateTime muteUntil;
     private DigestFrequency digestFrequency;
 }

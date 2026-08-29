@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.SprintForge.platform.communication.notification.NotificationChannel;
 import org.SprintForge.platform.communication.notification.NotificationType;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Entity(name = "PlatformNotificationPreference")
@@ -40,25 +40,25 @@ public class NotificationPreference {
     private boolean enabled;
 
     @Column(name = "mute_until")
-    private Instant muteUntil;
+    private LocalDateTime muteUntil;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "digest_frequency", nullable = false, length = 30)
     private DigestFrequency digestFrequency;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
-            createdAt = Instant.now();
+            createdAt = LocalDateTime.now();
         }
         if (updatedAt == null) {
-            updatedAt = Instant.now();
+            updatedAt = LocalDateTime.now();
         }
         if (digestFrequency == null) {
             digestFrequency = DigestFrequency.IMMEDIATE;
@@ -67,6 +67,6 @@ public class NotificationPreference {
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = Instant.now();
+        updatedAt = LocalDateTime.now();
     }
 }

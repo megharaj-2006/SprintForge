@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.SprintForge.platform.communication.activity.ActivityType;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -23,5 +23,5 @@ public class ActivityFeedResponse {
     private String summary;
     private String metadata;
     private String visibility;
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 }

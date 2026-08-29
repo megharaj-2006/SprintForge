@@ -24,6 +24,24 @@ public class DatabaseConfig {
     @Value("${spring.datasource.password:${DB_PASSWORD:${SPRING_DATASOURCE_PASSWORD:postgres}}}")
     private String datasourcePassword;
 
+    @Value("${spring.datasource.driver-class-name:${DB_DRIVER_CLASS_NAME:}}")
+    private String driverClassName;
+
+    @Value("${spring.datasource.hikari.maximum-pool-size:${HIKARI_MAX_POOL_SIZE:5}}")
+    private int maxPoolSize;
+
+    @Value("${spring.datasource.hikari.minimum-idle:${HIKARI_MIN_IDLE:2}}")
+    private int minIdle;
+
+    @Value("${spring.datasource.hikari.idle-timeout:${HIKARI_IDLE_TIMEOUT:600000}}")
+    private long idleTimeout;
+
+    @Value("${spring.datasource.hikari.connection-timeout:${HIKARI_CONNECTION_TIMEOUT:30000}}")
+    private long connectionTimeout;
+
+    @Value("${spring.datasource.hikari.max-lifetime:${HIKARI_MAX_LIFETIME:1800000}}")
+    private long maxLifetime;
+
     @Bean
     @Primary
     public DataSource dataSource() {
@@ -55,12 +73,19 @@ public class DatabaseConfig {
         config.setJdbcUrl(url);
         config.setUsername(username);
         config.setPassword(password);
-        config.setDriverClassName("org.postgresql.Driver");
-        config.setMaximumPoolSize(5);
-        config.setMinimumIdle(1);
-        config.setIdleTimeout(600000);
-        config.setMaxLifetime(1800000);
-        config.setConnectionTimeout(30000);
+
+        if (driverClassName != null && !driverClassName.trim().isEmpty()) {
+            config.setDriverClassName(driverClassName.trim());
+        } else if (url.startsWith("jdbc:h2:")) {
+            config.setDriverClassName("org.h2.Driver");
+        } else if (url.startsWith("jdbc:postgresql:")) {
+            config.setDriverClassName("org.postgresql.Driver");
+        }
+        config.setMaximumPoolSize(maxPoolSize);
+        config.setMinimumIdle(minIdle);
+        config.setIdleTimeout(idleTimeout);
+        config.setMaxLifetime(maxLifetime);
+        config.setConnectionTimeout(connectionTimeout);
         config.setPoolName("SprintForgeHikariPool");
 
         return new HikariDataSource(config);

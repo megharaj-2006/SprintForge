@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Entity(name = "PlatformEmailTemplate")
@@ -39,12 +39,12 @@ public class EmailTemplate {
     private int version;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
-            createdAt = Instant.now();
+            createdAt = LocalDateTime.now();
         }
         if (version == 0) {
             version = 1;

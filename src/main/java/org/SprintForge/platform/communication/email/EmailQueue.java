@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Entity(name = "PlatformEmailQueue")
@@ -36,24 +36,24 @@ public class EmailQueue {
     private int attempts;
 
     @Column(name = "scheduled_at", nullable = false)
-    private Instant scheduledAt;
+    private LocalDateTime scheduledAt;
 
     @Column(name = "sent_at")
-    private Instant sentAt;
+    private LocalDateTime sentAt;
 
     @Column(name = "error", columnDefinition = "TEXT")
     private String error;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
-            createdAt = Instant.now();
+            createdAt = LocalDateTime.now();
         }
         if (scheduledAt == null) {
-            scheduledAt = Instant.now();
+            scheduledAt = LocalDateTime.now();
         }
         if (status == null) {
             status = "PENDING";

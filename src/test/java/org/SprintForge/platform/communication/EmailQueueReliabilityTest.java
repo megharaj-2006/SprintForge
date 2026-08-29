@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +33,7 @@ public class EmailQueueReliabilityTest {
                 .payload("{}")
                 .status("PENDING")
                 .attempts(0)
-                .scheduledAt(Instant.now())
+                .scheduledAt(LocalDateTime.now())
                 .build();
 
         EmailQueue saved = emailQueueRepository.save(email);

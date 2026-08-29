@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.SprintForge.platform.event.metadata.EventPriority;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -68,21 +68,21 @@ public class PlatformNotification {
     private boolean isRead;
 
     @Column(name = "read_at")
-    private Instant readAt;
+    private LocalDateTime readAt;
 
     @Column(name = "is_archived", nullable = false)
     private boolean isArchived;
 
     @Column(name = "expires_at")
-    private Instant expiresAt;
+    private LocalDateTime expiresAt;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
-            createdAt = Instant.now();
+            createdAt = LocalDateTime.now();
         }
         if (priority == null) {
             priority = EventPriority.NORMAL;

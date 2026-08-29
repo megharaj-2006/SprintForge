@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +33,7 @@ public class EmailQueueService {
                 .payload(payloadJson)
                 .status("PENDING")
                 .attempts(0)
-                .scheduledAt(Instant.now())
+                .scheduledAt(LocalDateTime.now())
                 .build();
 
         log.info("[EmailQueueService] Queued email to {} using template {}", recipient, templateName);
@@ -61,7 +61,7 @@ public class EmailQueueService {
                 boolean sent = emailSenderPort.sendEmail(item.getRecipient(), subject, body);
                 if (sent) {
                     item.setStatus("SENT");
-                    item.setSentAt(Instant.now());
+                    item.setSentAt(LocalDateTime.now());
                 } else {
                     item.setAttempts(item.getAttempts() + 1);
                     if (item.getAttempts() >= 3) {

@@ -46,12 +46,11 @@ COPY --from=builder --chown=sprintforge:sprintforge /app/build/libs/*.jar app.ja
 USER sprintforge:sprintforge
 
 # Expose Spring Boot HTTP port
-EXPOSE 8080 10000
+EXPOSE 8080
 
-# Environment variables with sensible container defaults
-ENV JAVA_OPTS="-XX:+UseG1GC -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError" \
-    SPRING_PROFILES_ACTIVE="prod" \
-    PORT=8080
+# Environment variables with sensible container defaults for 512MB RAM
+ENV JAVA_OPTS="-XX:+UseG1GC -XX:MaxRAMPercentage=50.0 -XX:MinRAMPercentage=50.0 -XX:InitialRAMPercentage=25.0 -Xss512k -XX:+UseStringDeduplication -XX:+ExitOnOutOfMemoryError" \
+    SPRING_PROFILES_ACTIVE="prod"
 
 # Entrypoint execution with explicit server.port binding for cloud PaaS (Render, Heroku, Cloud Run)
 ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -Dserver.port=${PORT:-8080} -jar app.jar"]

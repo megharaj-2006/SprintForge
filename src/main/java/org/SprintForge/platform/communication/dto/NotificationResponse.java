@@ -9,7 +9,7 @@ import org.SprintForge.platform.communication.notification.NotificationStatus;
 import org.SprintForge.platform.communication.notification.NotificationType;
 import org.SprintForge.platform.event.metadata.EventPriority;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -31,8 +31,8 @@ public class NotificationResponse {
     private NotificationStatus status;
     private String actionUrl;
     private boolean isRead;
-    private Instant readAt;
+    private LocalDateTime readAt;
     private boolean isArchived;
-    private Instant expiresAt;
-    private Instant createdAt;
+    private LocalDateTime expiresAt;
+    private LocalDateTime createdAt;
 }

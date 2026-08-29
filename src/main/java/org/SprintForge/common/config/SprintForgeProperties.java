@@ -40,8 +40,8 @@ public class SprintForgeProperties {
     @Setter
     public static class Execution {
         private int maxPageSize = 100;
-        private int threadPoolCoreSize = 10;
-        private int threadPoolMaxSize = 50;
-        private int threadPoolQueueCapacity = 500;
+        private int threadPoolCoreSize = 4;
+        private int threadPoolMaxSize = 10;
+        private int threadPoolQueueCapacity = 100;
     }
 }

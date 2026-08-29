@@ -7,7 +7,7 @@ import org.SprintForge.platform.communication.notification.NotificationChannel;
 import org.SprintForge.platform.communication.notification.NotificationType;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -53,7 +53,7 @@ public class NotificationFilterService {
                 return false;
             }
 
-            if (pref.getMuteUntil() != null && pref.getMuteUntil().isAfter(Instant.now())) {
+            if (pref.getMuteUntil() != null && pref.getMuteUntil().isAfter(LocalDateTime.now())) {
                 log.info("[NotificationFilter] Notification suppressed for user {} (workspace muted until {})", request.getRecipientId(), pref.getMuteUntil());
                 return false;
             }

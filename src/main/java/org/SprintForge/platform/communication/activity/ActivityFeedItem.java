@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Entity(name = "PlatformActivityFeedItem")
@@ -49,12 +49,12 @@ public class ActivityFeedItem {
     private String visibility;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
-            createdAt = Instant.now();
+            createdAt = LocalDateTime.now();
         }
         if (visibility == null) {
             visibility = "PUBLIC";
