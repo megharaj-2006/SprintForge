@@ -4,12 +4,6 @@ import type { TaskStatus, TaskPriority } from '../../types';
 
 export function StatusGlyph({ status }: { status: TaskStatus }) {
   switch (status) {
-    case 'BACKLOG':
-      return (
-        <svg className="w-3.5 h-3.5 text-status-backlog shrink-0" viewBox="0 0 16 16" fill="none">
-          <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2" />
-        </svg>
-      );
     case 'TODO':
       return (
         <svg className="w-3.5 h-3.5 text-muted-foreground shrink-0" viewBox="0 0 16 16" fill="none">
@@ -37,7 +31,6 @@ export function StatusGlyph({ status }: { status: TaskStatus }) {
           <path d="M5 8 L7 10 L11 6" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );
-    case 'ARCHIVED':
     case 'CANCELLED':
       return (
         <svg className="w-3.5 h-3.5 text-muted-foreground shrink-0" viewBox="0 0 16 16" fill="none">
@@ -52,12 +45,10 @@ export function StatusGlyph({ status }: { status: TaskStatus }) {
 
 export function StatusBadge({ status, className }: { status: TaskStatus; className?: string }) {
   const labels: Record<TaskStatus, string> = {
-    BACKLOG: 'Backlog',
     TODO: 'Todo',
     IN_PROGRESS: 'In Progress',
     IN_REVIEW: 'In Review',
     DONE: 'Done',
-    ARCHIVED: 'Archived',
     CANCELLED: 'Canceled',
   };
 
@@ -78,15 +69,6 @@ export function PriorityBadge({ priority, className }: { priority: TaskPriority;
   const configs: Record<TaskPriority, { label: string; color: string; icon: React.ReactNode }> = {
     URGENT: {
       label: 'Urgent',
-      color: 'text-red-500',
-      icon: (
-        <svg className="w-3 h-3 text-red-500" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M8 1 L15 14 L1 14 Z M8 5 v4 M8 11 v1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      ),
-    },
-    CRITICAL: {
-      label: 'Critical',
       color: 'text-red-500',
       icon: (
         <svg className="w-3 h-3 text-red-500" viewBox="0 0 16 16" fill="currentColor">

@@ -37,7 +37,7 @@ export function MyTasksPage() {
 
   const filteredTasks = myTasks.filter((task) => {
     if (activeTab === 'urgent') {
-      return task.priority === 'URGENT' || task.priority === 'CRITICAL' || task.priority === 'HIGH';
+      return task.priority === 'URGENT' || task.priority === 'HIGH';
     }
     if (activeTab === 'created') {
       return task.reporterId === user?.id;
@@ -47,7 +47,7 @@ export function MyTasksPage() {
 
   const dueSoonCount = myTasks.filter((t) => t.dueDate && t.status !== 'DONE').length;
   const completedCount = myTasks.filter((t) => t.status === 'DONE').length;
-  const urgentCount = myTasks.filter((t) => (t.priority === 'URGENT' || t.priority === 'CRITICAL' || t.priority === 'HIGH') && t.status !== 'DONE').length;
+  const urgentCount = myTasks.filter((t) => (t.priority === 'URGENT' || t.priority === 'HIGH') && t.status !== 'DONE').length;
 
   return (
     <div className="flex flex-col h-full overflow-y-auto select-none p-6 max-w-7xl mx-auto">

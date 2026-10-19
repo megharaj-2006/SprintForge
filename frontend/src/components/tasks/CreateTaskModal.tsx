@@ -128,11 +128,11 @@ export function CreateTaskModal({ onTaskCreated }: { onTaskCreated?: () => void 
               onChange={(e) => setStatus(e.target.value as TaskStatus)}
               className="w-full bg-surface border border-border rounded px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
             >
-              <option value="BACKLOG">Backlog</option>
-              <option value="TODO">Todo</option>
+              <option value="TODO">To Do</option>
               <option value="IN_PROGRESS">In Progress</option>
               <option value="IN_REVIEW">In Review</option>
               <option value="DONE">Done</option>
+              <option value="CANCELLED">Cancelled</option>
             </select>
           </div>
 
@@ -149,7 +149,7 @@ export function CreateTaskModal({ onTaskCreated }: { onTaskCreated?: () => void 
               <option value="LOW">Low</option>
               <option value="MEDIUM">Medium</option>
               <option value="HIGH">High</option>
-              <option value="CRITICAL">Urgent</option>
+              <option value="URGENT">Urgent</option>
             </select>
           </div>
 
@@ -166,8 +166,10 @@ export function CreateTaskModal({ onTaskCreated }: { onTaskCreated?: () => void 
               <option value="TASK">Task</option>
               <option value="BUG">Bug</option>
               <option value="FEATURE">Feature</option>
+              <option value="STORY">Story</option>
+              <option value="EPIC">Epic</option>
               <option value="SPIKE">Spike</option>
-              <option value="IMPROVEMENT">Improvement</option>
+              <option value="CHORE">Chore</option>
             </select>
           </div>
 

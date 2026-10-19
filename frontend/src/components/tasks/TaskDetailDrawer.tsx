@@ -202,12 +202,11 @@ export function TaskDetailDrawer({ onTaskUpdated }: { onTaskUpdated?: () => void
                   onChange={(e) => handleStatusChange(e.target.value as TaskStatus)}
                   className="bg-surface border border-border rounded px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-foreground font-medium"
                 >
-                  <option value="BACKLOG">Backlog</option>
-                  <option value="TODO">Todo</option>
+                  <option value="TODO">To Do</option>
                   <option value="IN_PROGRESS">In Progress</option>
                   <option value="IN_REVIEW">In Review</option>
                   <option value="DONE">Done</option>
-                  <option value="ARCHIVED">Canceled</option>
+                  <option value="CANCELLED">Cancelled</option>
                 </select>
               </div>
 

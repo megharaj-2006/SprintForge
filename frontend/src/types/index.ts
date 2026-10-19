@@ -1,6 +1,7 @@
-export type TaskStatus = 'BACKLOG' | 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'ARCHIVED' | 'CANCELLED';
-export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' | 'URGENT';
-export type TaskType = 'TASK' | 'BUG' | 'FEATURE' | 'SPIKE' | 'IMPROVEMENT';
+export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' | 'CANCELLED';
+export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+export type TaskType = 'TASK' | 'BUG' | 'FEATURE' | 'STORY' | 'EPIC' | 'SPIKE' | 'CHORE';
+export type ProjectVisibility = 'PRIVATE' | 'WORKSPACE' | 'PUBLIC';
 
 export interface User {
   id: number;

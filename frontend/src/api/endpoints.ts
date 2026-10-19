@@ -167,7 +167,14 @@ export const taskApi = {
     storyPoints?: number;
     assigneeId?: number;
     dueDate?: string;
-  }) => apiClient.post<Task>(`/api/v1/projects/${projectId}/tasks`, data).then((r) => r.data),
+  }) => {
+    const payload = {
+      ...data,
+      projectId,
+      dueDate: data.dueDate ? (data.dueDate.includes('T') ? data.dueDate : `${data.dueDate}T00:00:00`) : undefined,
+    };
+    return apiClient.post<Task>(`/api/v1/projects/${projectId}/tasks`, payload).then((r) => r.data);
+  },
   updateTask: (id: number, data: Partial<Task>) =>
     apiClient.patch<Task>(`/api/v1/tasks/${id}`, data).then((r) => r.data),
   deleteTask: (id: number) => apiClient.delete(`/api/v1/tasks/${id}`),

@@ -31,7 +31,7 @@ export function ProjectsHubPage() {
   const [name, setName] = useState('');
   const [identifier, setIdentifier] = useState('');
   const [description, setDescription] = useState('');
-  const [visibility, setVisibility] = useState('INTERNAL');
+  const [visibility, setVisibility] = useState('WORKSPACE');
   const [formError, setFormError] = useState<string | null>(null);
 
   const workspaceId = currentWorkspace?.id;
@@ -278,7 +278,7 @@ export function ProjectsHubPage() {
               onChange={(e) => setVisibility(e.target.value)}
               className="w-full h-8 px-2 rounded-md border border-border bg-background text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
             >
-              <option value="INTERNAL">Internal (Workspace Members)</option>
+              <option value="WORKSPACE">Workspace (All Members)</option>
               <option value="PUBLIC">Public</option>
               <option value="PRIVATE">Private (Restricted)</option>
             </select>
