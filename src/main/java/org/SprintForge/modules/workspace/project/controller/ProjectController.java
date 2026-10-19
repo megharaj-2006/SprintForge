@@ -48,6 +48,7 @@ public class ProjectController {
             @PathVariable("workspaceId") Long workspaceId,
             @Valid @RequestBody ProjectCreateRequest request,
             @RequestHeader(value = "X-User-Id", defaultValue = "1") Long actorId) {
+        request.setWorkspaceId(workspaceId);
         ProjectResponse response = projectService.createProject(workspaceId, request, actorId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

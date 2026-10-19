@@ -51,9 +51,9 @@ export function ProjectsHubPage() {
       if (!workspaceId) throw new Error('No active workspace selected.');
       return projectApi.createProject({
         workspaceId,
-        name,
+        name: name.trim(),
         identifier: identifier.toUpperCase().trim(),
-        description,
+        description: description.trim() || undefined,
         visibility,
       });
     },
@@ -67,8 +67,15 @@ export function ProjectsHubPage() {
       navigate(`/projects/${newProject.id}/board`);
     },
     onError: (err: any) => {
+      const vErrors = err.response?.data?.validationErrors;
+      const detailMsg = vErrors ? Object.values(vErrors).join(', ') : null;
+      const firstError = err.response?.data?.errors?.[0]?.message;
       setFormError(
-        err.response?.data?.message || err.message || 'Failed to create project.'
+        detailMsg ||
+        firstError ||
+        err.response?.data?.message ||
+        err.message ||
+        'Failed to create project.'
       );
     },
   });
@@ -80,8 +87,16 @@ export function ProjectsHubPage() {
       setFormError('Project name is required.');
       return;
     }
+    if (name.trim().length < 2 || name.trim().length > 100) {
+      setFormError('Project name must be between 2 and 100 characters.');
+      return;
+    }
     if (!identifier.trim()) {
       setFormError('Project identifier (key) is required.');
+      return;
+    }
+    if (identifier.trim().length < 2 || identifier.trim().length > 10) {
+      setFormError('Project identifier (key) must be between 2 and 10 characters.');
       return;
     }
     createMutation.mutate();

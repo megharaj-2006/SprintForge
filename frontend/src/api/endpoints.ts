@@ -143,7 +143,12 @@ export const projectApi = {
   }) => {
     const payload = {
       ...data,
-      projectKey: data.projectKey || data.identifier || 'ENG',
+      workspaceId: Number(data.workspaceId),
+      name: data.name.trim(),
+      projectKey: (data.projectKey || data.identifier || 'ENG').trim().toUpperCase(),
+      description: data.description?.trim() || undefined,
+      visibility: data.visibility || 'WORKSPACE',
+      status: data.status || 'PLANNING',
       isTemplate: false,
     };
     return apiClient.post<Project>(`/api/v1/workspaces/${data.workspaceId}/projects`, payload).then((r) => r.data);
@@ -170,7 +175,9 @@ export const taskApi = {
   }) => {
     const payload = {
       ...data,
-      projectId,
+      projectId: Number(projectId),
+      title: data.title.trim(),
+      description: data.description?.trim() || undefined,
       dueDate: data.dueDate ? (data.dueDate.includes('T') ? data.dueDate : `${data.dueDate}T00:00:00`) : undefined,
     };
     return apiClient.post<Task>(`/api/v1/projects/${projectId}/tasks`, payload).then((r) => r.data);

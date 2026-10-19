@@ -93,7 +93,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        log.warn("Validation failure on request body at {}", request.getRequestURI());
         List<FieldErrorResponse> errors = new ArrayList<>();
         Map<String, String> validationErrors = new HashMap<>();
 
@@ -111,10 +110,16 @@ public class GlobalExceptionHandler {
             validationErrors.put(fieldName, errorMessage);
         });
 
+        log.warn("Validation failure on request body at {}: {}", request.getRequestURI(), validationErrors);
+
+        String detailedMessage = validationErrors.isEmpty()
+                ? "Input validation failed"
+                : String.join("; ", validationErrors.values());
+
         ValidationErrorResponse response = ValidationErrorResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error("Validation Error")
-                .message("Input validation failed")
+                .message(detailedMessage)
                 .path(request.getRequestURI())
                 .code(ErrorCode.INVALID_INPUT.getValue())
                 .errors(errors)
@@ -125,7 +130,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ValidationErrorResponse> handleConstraintViolationException(ConstraintViolationException ex, HttpServletRequest request) {
-        log.warn("Constraint violation at {}: {}", request.getRequestURI(), ex.getMessage());
         List<FieldErrorResponse> errors = new ArrayList<>();
         Map<String, String> validationErrors = new HashMap<>();
 
@@ -144,10 +148,16 @@ public class GlobalExceptionHandler {
             validationErrors.put(fieldName, message);
         });
 
+        log.warn("Constraint violation at {}: {}", request.getRequestURI(), validationErrors);
+
+        String detailedMessage = validationErrors.isEmpty()
+                ? "Validation failed"
+                : String.join("; ", validationErrors.values());
+
         ValidationErrorResponse response = ValidationErrorResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error("Validation Error")
-                .message("Validation failed")
+                .message(detailedMessage)
                 .path(request.getRequestURI())
                 .code(ErrorCode.INVALID_INPUT.getValue())
                 .errors(errors)

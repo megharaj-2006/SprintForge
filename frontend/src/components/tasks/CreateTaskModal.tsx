@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { useUIStore } from '../../store/useUIStore';
@@ -12,7 +12,7 @@ export function CreateTaskModal({ onTaskCreated }: { onTaskCreated?: () => void 
   const { createTaskModalOpen, setCreateTaskModalOpen } = useUIStore();
   const { currentProject, projects } = useWorkspaceStore();
 
-  const [projectId, setProjectId] = useState<number>(currentProject?.id || 1);
+  const [projectId, setProjectId] = useState<number>(currentProject?.id || (projects[0]?.id ?? 0));
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState<TaskStatus>('TODO');
@@ -23,13 +23,35 @@ export function CreateTaskModal({ onTaskCreated }: { onTaskCreated?: () => void 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (currentProject?.id) {
+      setProjectId(currentProject.id);
+    } else if (projects.length > 0 && !projects.some((p) => p.id === projectId)) {
+      setProjectId(projects[0].id);
+    }
+  }, [currentProject, projects, projectId]);
+
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!title.trim() || isSubmitting) return;
-
-    const targetProjId = currentProject?.id || projectId;
-    setIsSubmitting(true);
     setError(null);
+
+    const targetProjId = currentProject?.id || projectId || (projects.length > 0 ? projects[0].id : null);
+    if (!targetProjId) {
+      setError('No project selected. Please create or select a project in this workspace first.');
+      return;
+    }
+
+    if (!title.trim()) {
+      setError('Task title is required.');
+      return;
+    }
+    if (title.trim().length < 2 || title.trim().length > 255) {
+      setError('Task title must be between 2 and 255 characters.');
+      return;
+    }
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
 
     try {
       await taskApi.createTask(targetProjId, {
@@ -49,8 +71,26 @@ export function CreateTaskModal({ onTaskCreated }: { onTaskCreated?: () => void 
       setCreateTaskModalOpen(false);
       onTaskCreated?.();
     } catch (err: unknown) {
-      const errObj = err as { response?: { data?: { message?: string } } };
-      setError(errObj.response?.data?.message || 'Failed to create task. Please try again.');
+      const errObj = err as {
+        response?: {
+          data?: {
+            message?: string;
+            validationErrors?: Record<string, string>;
+            errors?: Array<{ field?: string; message?: string }>;
+          };
+        };
+        message?: string;
+      };
+      const vErrors = errObj.response?.data?.validationErrors;
+      const detailMsg = vErrors ? Object.values(vErrors).join(', ') : null;
+      const firstError = errObj.response?.data?.errors?.[0]?.message;
+      setError(
+        detailMsg ||
+        firstError ||
+        errObj.response?.data?.message ||
+        errObj.message ||
+        'Failed to create task. Please try again.'
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -69,6 +109,13 @@ export function CreateTaskModal({ onTaskCreated }: { onTaskCreated?: () => void 
           <div className="p-2.5 rounded-md bg-red-500/10 border border-red-500/20 text-red-500 text-xs flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
+          </div>
+        )}
+
+        {projects.length === 0 && (
+          <div className="p-3 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>No active projects found in this workspace. Please create a project before adding tasks.</span>
           </div>
         )}
 
@@ -221,6 +268,7 @@ export function CreateTaskModal({ onTaskCreated }: { onTaskCreated?: () => void 
               variant="primary"
               size="sm"
               isLoading={isSubmitting}
+              disabled={projects.length === 0 || isSubmitting}
               shortcut="↵"
             >
               Create Task

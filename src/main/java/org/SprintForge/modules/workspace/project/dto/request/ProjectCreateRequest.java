@@ -18,7 +18,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ProjectCreateRequest {
 
-    @NotNull(message = "Workspace ID is required")
     private Long workspaceId;
 
     @NotBlank(message = "Project name is required")
