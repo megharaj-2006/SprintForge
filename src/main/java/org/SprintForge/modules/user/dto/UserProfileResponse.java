@@ -22,6 +22,13 @@ public class UserProfileResponse {
     private String bio;
     private String profilePicture;
     private String avatar;
+    private String coverImage;
+    private String headline;
+    private String location;
+    private String skills;
+    private String githubUrl;
+    private String linkedinUrl;
+    private String websiteUrl;
     private AuthProvider provider;
     private boolean emailVerified;
     private boolean isSuspended;

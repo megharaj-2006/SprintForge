@@ -49,14 +49,36 @@ class AuthControllerTest {
         request.setEmail("john@example.com");
         request.setPassword("password123");
 
+        SignupResponse signupResponse = SignupResponse.builder()
+                .verificationRequired(true)
+                .email("john@example.com")
+                .message("Verification code sent to email")
+                .build();
+
+        when(authService.signup(any(SignupRequest.class), any(), any())).thenReturn(signupResponse);
+
+        mockMvc.perform(post("/api/v1/auth/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.toJson(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.verificationRequired").value(true))
+                .andExpect(jsonPath("$.email").value("john@example.com"));
+    }
+
+    @Test
+    void verifyEmail_WithValidData_ShouldReturn200() throws Exception {
+        VerifyEmailRequest request = new VerifyEmailRequest();
+        request.setEmail("john@example.com");
+        request.setCode("123456");
+
         JwtResponse jwtResponse = JwtResponse.builder()
                 .token("access_token")
                 .refreshToken("refresh_token")
                 .build();
 
-        when(authService.signup(any(SignupRequest.class), any(), any())).thenReturn(jwtResponse);
+        when(authService.verifyEmail(any(VerifyEmailRequest.class), any(), any())).thenReturn(jwtResponse);
 
-        mockMvc.perform(post("/api/v1/auth/signup")
+        mockMvc.perform(post("/api/v1/auth/verify-email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(request)))
                 .andExpect(status().isOk())

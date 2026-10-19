@@ -77,7 +77,6 @@ public interface UserMapper {
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "role", ignore = true)
-    @Mapping(target = "profilePicture", ignore = true)
     @Mapping(target = "avatar", ignore = true)
     @Mapping(target = "provider", ignore = true)
     @Mapping(target = "emailVerified", ignore = true)

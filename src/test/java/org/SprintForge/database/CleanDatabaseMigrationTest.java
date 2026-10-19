@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CleanDatabaseMigrationTest {
 
-    private static final String USER = "postgres";
-    private static final String PASS = "root123";
+    private static final String USER = System.getenv().getOrDefault("DB_USERNAME", "postgres");
+    private static final String PASS = System.getenv().getOrDefault("DB_PASSWORD", "postgres");
 
     @Test
     public void testCleanDatabaseMigration() {

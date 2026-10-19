@@ -39,4 +39,10 @@ public interface UserService {
     void deactivateAccount(Long userId);
 
     UserProfileResponse reactivateAccount(Long userId);
+
+    List<UserSessionResponse> getUserSessions(Long userId);
+
+    void revokeUserSession(Long userId, Long sessionId);
+
+    void revokeAllUserSessions(Long userId);
 }

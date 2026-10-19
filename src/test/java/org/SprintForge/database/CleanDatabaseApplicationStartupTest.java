@@ -16,10 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ActiveProfiles("prod")
 public class CleanDatabaseApplicationStartupTest {
 
+    private static final String USER = System.getenv().getOrDefault("DB_USERNAME", "postgres");
+    private static final String PASS = System.getenv().getOrDefault("DB_PASSWORD", "postgres");
+
     @BeforeAll
     public static void migrateCleanDatabase() {
         Flyway flyway = Flyway.configure()
-                .dataSource("jdbc:postgresql://localhost:5432/sprintforge_clean_test", "postgres", "root123")
+                .dataSource("jdbc:postgresql://localhost:5432/sprintforge_clean_test", USER, PASS)
                 .locations("classpath:db/migration")
                 .baselineOnMigrate(false)
                 .outOfOrder(false)
@@ -30,8 +33,8 @@ public class CleanDatabaseApplicationStartupTest {
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", () -> "jdbc:postgresql://localhost:5432/sprintforge_clean_test");
-        registry.add("spring.datasource.username", () -> "postgres");
-        registry.add("spring.datasource.password", () -> "root123");
+        registry.add("spring.datasource.username", () -> USER);
+        registry.add("spring.datasource.password", () -> PASS);
         registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
         registry.add("spring.flyway.enabled", () -> "true");

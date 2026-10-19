@@ -87,4 +87,32 @@ public class UserAccountController {
         UserDataExportResponse exportData = userService.exportUserData(currentUserId);
         return ResponseEntity.ok(exportData);
     }
+
+    @Operation(summary = "Get user logged in devices and sessions", description = "Fetches active sessions and devices for the current user.")
+    @ApiResponse(responseCode = "200", description = "User sessions retrieved successfully")
+    @GetMapping("/me/sessions")
+    public ResponseEntity<List<UserSessionResponse>> getUserSessions(
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long currentUserId) {
+        List<UserSessionResponse> sessions = userService.getUserSessions(currentUserId);
+        return ResponseEntity.ok(sessions);
+    }
+
+    @Operation(summary = "Revoke user session", description = "Revokes a specific active session.")
+    @ApiResponse(responseCode = "204", description = "Session revoked successfully")
+    @DeleteMapping("/me/sessions/{sessionId}")
+    public ResponseEntity<Void> revokeUserSession(
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long currentUserId,
+            @PathVariable("sessionId") Long sessionId) {
+        userService.revokeUserSession(currentUserId, sessionId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Revoke all user sessions", description = "Revokes all active sessions for the current user.")
+    @ApiResponse(responseCode = "204", description = "All sessions revoked successfully")
+    @DeleteMapping("/me/sessions")
+    public ResponseEntity<Void> revokeAllUserSessions(
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") Long currentUserId) {
+        userService.revokeAllUserSessions(currentUserId);
+        return ResponseEntity.noContent().build();
+    }
 }

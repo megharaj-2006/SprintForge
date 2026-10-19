@@ -15,6 +15,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     Optional<User> findByUsername(String username);
     Optional<User> findByEmail(String email);
+    Optional<User> findByProviderAndProviderId(org.SprintForge.modules.auth.entity.AuthProvider provider, String providerId);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
     boolean existsByUsernameAndIdNot(String username, Long id);

@@ -17,6 +17,20 @@ sprintforge:
       expiration: ${JWT_EXPIRATION:86400000}
     cors:
       allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:*}
+    oauth:
+      google:
+        client-id: ${GOOGLE_CLIENT_ID:}
+        client-secret: ${GOOGLE_CLIENT_SECRET:}
+      github:
+        client-id: ${GITHUB_CLIENT_ID:}
+        client-secret: ${GITHUB_CLIENT_SECRET:}
+      linkedin:
+        client-id: ${LINKEDIN_CLIENT_ID:}
+        client-secret: ${LINKEDIN_CLIENT_SECRET:}
+      microsoft:
+        client-id: ${MICROSOFT_CLIENT_ID:}
+        client-secret: ${MICROSOFT_CLIENT_SECRET:}
+        tenant-id: ${MICROSOFT_TENANT_ID:common}
 
 management:
   endpoints:

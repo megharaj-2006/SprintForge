@@ -38,16 +38,37 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordService passwordService;
     private final JwtService jwtService;
     private final OtpService otpService;
+    private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
 
     @Override
     @Transactional
-    public JwtResponse signup(SignupRequest request, String userAgent, String ipAddress) {
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new AuthException("Username is already taken");
+    public SignupResponse signup(SignupRequest request, String userAgent, String ipAddress) {
+        var existingUserOpt = userRepository.findByEmail(request.getEmail().trim().toLowerCase());
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+            if (existingUser.isEmailVerified()) {
+                throw new AuthException("This email address is already in use. Please sign in instead.");
+            }
+            // User registered previously but has not verified their email yet.
+            // Update password & username, generate fresh OTP, and resend verification email.
+            existingUser.setUsername(request.getUsername().trim());
+            existingUser.setPassword(passwordService.encode(request.getPassword()));
+            User savedUser = userRepository.save(existingUser);
+
+            String code = generate6DigitCode();
+            createOrUpdateVerificationToken(savedUser, code);
+            emailService.sendVerificationEmail(savedUser.getEmail(), savedUser.getUsername(), code);
+
+            return SignupResponse.builder()
+                    .verificationRequired(true)
+                    .email(savedUser.getEmail())
+                    .message("A new verification code has been sent to your email. Please verify to complete registration.")
+                    .build();
         }
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new AuthException("Email is already registered");
+
+        if (userRepository.existsByUsername(request.getUsername().trim())) {
+            throw new AuthException("Username is already taken");
         }
 
         Role defaultRole = roleRepository.findByName("DEVELOPER")
@@ -59,16 +80,60 @@ public class AuthServiceImpl implements AuthService {
                 ));
 
         User user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
+                .username(request.getUsername().trim())
+                .email(request.getEmail().trim().toLowerCase())
                 .password(passwordService.encode(request.getPassword()))
                 .provider(AuthProvider.LOCAL)
-                .emailVerified(true)
+                .emailVerified(false)
                 .role(defaultRole)
                 .build();
 
         User savedUser = userRepository.save(user);
-        
+
+        String code = generate6DigitCode();
+        createOrUpdateVerificationToken(savedUser, code);
+        emailService.sendVerificationEmail(savedUser.getEmail(), savedUser.getUsername(), code);
+
+        return SignupResponse.builder()
+                .verificationRequired(true)
+                .email(savedUser.getEmail())
+                .message("Verification code has been sent to your email. Please verify your email to complete registration.")
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public JwtResponse verifyEmail(VerifyEmailRequest request, String userAgent, String ipAddress) {
+        User user = userRepository.findByEmail(request.getEmail().trim().toLowerCase())
+                .orElseThrow(() -> new AuthException("No account found with this email address"));
+
+        if (user.isEmailVerified()) {
+            RefreshToken refreshToken = createRefreshToken(user, userAgent, ipAddress);
+            String jwt = jwtService.generateToken(user.getUsername(), refreshToken.getToken());
+            return JwtResponse.builder()
+                    .token(jwt)
+                    .refreshToken(refreshToken.getToken())
+                    .username(user.getUsername())
+                    .email(user.getEmail())
+                    .role(user.getRole() != null ? user.getRole().getName() : null)
+                    .build();
+        }
+
+        EmailVerificationToken token = emailVerificationTokenRepository.findByUser(user)
+                .orElseThrow(() -> new AuthException("No pending verification found. Please request a new code."));
+
+        if (token.getExpiryDate().isBefore(Instant.now())) {
+            throw new AuthException("Verification code has expired. Please request a new code.");
+        }
+
+        if (!token.getToken().equals(request.getCode().trim())) {
+            throw new AuthException("Invalid verification code. Please check your email and try again.");
+        }
+
+        user.setEmailVerified(true);
+        User savedUser = userRepository.save(user);
+        emailVerificationTokenRepository.delete(token);
+
         RefreshToken refreshToken = createRefreshToken(savedUser, userAgent, ipAddress);
         String jwt = jwtService.generateToken(savedUser.getUsername(), refreshToken.getToken());
 
@@ -77,13 +142,35 @@ public class AuthServiceImpl implements AuthService {
                 .refreshToken(refreshToken.getToken())
                 .username(savedUser.getUsername())
                 .email(savedUser.getEmail())
-                .role(savedUser.getRole().getName())
+                .role(savedUser.getRole() != null ? savedUser.getRole().getName() : null)
                 .build();
     }
 
     @Override
     @Transactional
+    public void resendVerification(ResendVerificationRequest request) {
+        User user = userRepository.findByEmail(request.getEmail().trim().toLowerCase())
+                .orElseThrow(() -> new AuthException("No account found with this email address"));
+
+        if (user.isEmailVerified()) {
+            throw new AuthException("This email address is already verified. Please sign in.");
+        }
+
+        String code = generate6DigitCode();
+        createOrUpdateVerificationToken(user, code);
+        emailService.sendVerificationEmail(user.getEmail(), user.getUsername(), code);
+    }
+
+
+    @Override
+    @Transactional
     public JwtResponse login(LoginRequest request, String userAgent, String ipAddress) {
+        var userOpt = userRepository.findByUsername(request.getUsernameOrEmail())
+                .or(() -> userRepository.findByEmail(request.getUsernameOrEmail()));
+        if (userOpt.isPresent() && !userOpt.get().isEmailVerified()) {
+            throw new AuthException("Email address not verified. Please verify your email before logging in.");
+        }
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsernameOrEmail(),
@@ -230,5 +317,19 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         return refreshTokenRepository.save(refreshToken);
+    }
+
+    private String generate6DigitCode() {
+        return String.format("%06d", java.util.concurrent.ThreadLocalRandom.current().nextInt(100000, 1000000));
+    }
+
+    private void createOrUpdateVerificationToken(User user, String code) {
+        EmailVerificationToken token = emailVerificationTokenRepository.findByUser(user)
+                .orElse(EmailVerificationToken.builder()
+                        .user(user)
+                        .build());
+        token.setToken(code);
+        token.setExpiryDate(Instant.now().plus(15, ChronoUnit.MINUTES));
+        emailVerificationTokenRepository.save(token);
     }
 }

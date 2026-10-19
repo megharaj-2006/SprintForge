@@ -17,13 +17,29 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<JwtResponse> signup(
+    public ResponseEntity<SignupResponse> signup(
             @Valid @RequestBody SignupRequest request,
             @RequestHeader(value = "User-Agent", required = false) String userAgent,
             HttpServletRequest httpServletRequest) {
         String ipAddress = httpServletRequest.getRemoteAddr();
         return ResponseEntity.ok(authService.signup(request, userAgent, ipAddress));
     }
+
+    @PostMapping("/verify-email")
+    public ResponseEntity<JwtResponse> verifyEmail(
+            @Valid @RequestBody VerifyEmailRequest request,
+            @RequestHeader(value = "User-Agent", required = false) String userAgent,
+            HttpServletRequest httpServletRequest) {
+        String ipAddress = httpServletRequest.getRemoteAddr();
+        return ResponseEntity.ok(authService.verifyEmail(request, userAgent, ipAddress));
+    }
+
+    @PostMapping("/resend-verification")
+    public ResponseEntity<Void> resendVerification(@Valid @RequestBody ResendVerificationRequest request) {
+        authService.resendVerification(request);
+        return ResponseEntity.ok().build();
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(

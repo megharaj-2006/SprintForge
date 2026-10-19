@@ -12,9 +12,11 @@ public class SchemaGenerationTest {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
+        String user = System.getenv().getOrDefault("DB_USERNAME", "postgres");
+        String pass = System.getenv().getOrDefault("DB_PASSWORD", "postgres");
         registry.add("spring.datasource.url", () -> "jdbc:postgresql://localhost:5432/sprintforge_schema_scratch");
-        registry.add("spring.datasource.username", () -> "postgres");
-        registry.add("spring.datasource.password", () -> "root123");
+        registry.add("spring.datasource.username", () -> user);
+        registry.add("spring.datasource.password", () -> pass);
         registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
         registry.add("spring.flyway.enabled", () -> "false");

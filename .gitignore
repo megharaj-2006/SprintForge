@@ -43,3 +43,14 @@ uploads/
 .env.*
 !.env.example
 
+### Docker & Build Caches ###
+.docker-gradle-cache/
+
+### Frontend Dependencies & Artifacts ###
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+*.tsbuildinfo
+.vercel/
+

@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Linear Light Mode - Crisp Black & White Minimalist Contrast */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 4%;
+
+    --surface: 0 0% 100%;
+    --surface-hover: 240 5% 96%;
+    --surface-active: 240 5% 91%;
+    --surface-raised: 0 0% 100%;
+
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 240 10% 4%;
+
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+
+    --primary: 240 10% 4%;
+    --primary-hover: 240 6% 16%;
+    --primary-foreground: 0 0% 100%;
+
+    --accent: 240 10% 4%;
+    --accent-foreground: 0 0% 100%;
+  }
+
+  .dark {
+    /* Linear Dark Mode - Pitch Black & Crisp White High Contrast */
+    --background: 240 10% 3.5%;
+    --foreground: 0 0% 98%;
+
+    --surface: 240 10% 6%;
+    --surface-hover: 240 6% 11%;
+    --surface-active: 240 6% 15%;
+    --surface-raised: 240 8% 8.5%;
+
+    --border: 240 5% 15%;
+    --input: 240 5% 15%;
+    --ring: 0 0% 100%;
+
+    --muted: 240 6% 9%;
+    --muted-foreground: 240 5% 64%;
+
+    --primary: 0 0% 100%;
+    --primary-hover: 240 5% 88%;
+    --primary-foreground: 240 10% 4%;
+
+    --accent: 0 0% 100%;
+    --accent-foreground: 240 10% 4%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'tnum';
+    letter-spacing: -0.011em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Universal typography inheritance across all native form and display elements */
+  input,
+  button,
+  textarea,
+  select,
+  kbd,
+  code,
+  pre {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  }
+}
+
+/* Linear-Grade Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
+}
+
+/* Tabular figures for numbers */
+.tnum {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(14, 16, 21, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.light .glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+}

@@ -3,7 +3,9 @@ package org.SprintForge.modules.auth.service;
 import org.SprintForge.modules.auth.dto.*;
 
 public interface AuthService {
-    JwtResponse signup(SignupRequest request, String userAgent, String ipAddress);
+    SignupResponse signup(SignupRequest request, String userAgent, String ipAddress);
+    JwtResponse verifyEmail(VerifyEmailRequest request, String userAgent, String ipAddress);
+    void resendVerification(ResendVerificationRequest request);
     JwtResponse login(LoginRequest request, String userAgent, String ipAddress);
     JwtResponse refresh(RefreshRequest request);
     void logout(String token);

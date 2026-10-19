@@ -28,13 +28,16 @@ public class User extends SoftDeleteEntity {
     @Column(name = "password_hash")
     private String password;
 
-    @Column(name = "profile_picture")
+    @Column(name = "profile_picture", columnDefinition = "TEXT")
     private String profilePicture;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AuthProvider provider = AuthProvider.LOCAL;
+
+    @Column(name = "provider_id")
+    private String providerId;
 
     @Builder.Default
     @Column(name = "email_verified", nullable = false)
@@ -62,6 +65,27 @@ public class User extends SoftDeleteEntity {
 
     @Column(name = "last_active_at")
     private LocalDateTime lastActiveAt;
+
+    @Column(name = "cover_image", columnDefinition = "TEXT")
+    private String coverImage;
+
+    @Column(name = "headline")
+    private String headline;
+
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "skills", columnDefinition = "TEXT")
+    private String skills;
+
+    @Column(name = "github_url")
+    private String githubUrl;
+
+    @Column(name = "linkedin_url")
+    private String linkedinUrl;
+
+    @Column(name = "website_url")
+    private String websiteUrl;
 
     public String getAvatar() {
         return profilePicture;

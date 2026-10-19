@@ -16,6 +16,8 @@ COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
+COPY gradle.properties* .
+COPY .docker-gradle-cache /root/.gradle/wrapper/dists
 
 # Make gradlew executable & pre-fetch dependencies
 RUN chmod +x ./gradlew && ./gradlew dependencies --no-daemon || true
